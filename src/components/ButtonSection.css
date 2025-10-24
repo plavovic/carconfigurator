@@ -1,0 +1,41 @@
+.button-container {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  max-width: 300px;
+  margin: 40px auto;
+  font-family: 'Sofia Sans', sans-serif;
+}
+
+.btn {
+  padding: 12px 24px;
+  font-weight: 300;
+  border-radius: 12px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+
+.black-btn {
+  background-color: black;
+  color: white;
+  border: none;
+}
+
+.black-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+
+.white-btn {
+  background-color: white;
+  color: black;
+  border: 2px solid black;
+}
+
+.white-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
