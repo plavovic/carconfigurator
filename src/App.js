@@ -22,6 +22,8 @@ function App() {
         </div>
         <header>
           <h1 href="#">Car Configurator</h1>
+
+          
         </header>
       <main>
         <div className="imageContent">
