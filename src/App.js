@@ -14,11 +14,13 @@ function App() {
   
   return (
     <div className="App">
+      
         
         <div className="video-container">
-          <video autoPlay muted loop className="background-video">
+          <h1>TAYCAN</h1>
+          {/*<video autoPlay muted loop className="background-video">
           <source src={backgroundVideo} type="video/mp4" />
-          </video>
+          </video>*/}
         </div>
         <header>
           <h1 href="#">Car Configurator</h1>
@@ -31,7 +33,7 @@ function App() {
         </div>
         <section className="taycan-info">
           <h2>Porsche Taycan</h2>
-          <p>The Porsche Taycan is an all-electric car produced by Porsche.</p>
+          <p>Porsche Taycan is an all-electric car produced by Porsche.</p>
           <p>From <span>$103.000</span></p>
         </section>
       <section className="specifications">
@@ -48,10 +50,10 @@ function App() {
       <ButtonSection />
       <p>Electrical energy consumptioncombined: 19.1 – 16.7 kWh/100 km (preliminary value), CO₂-emissions combined: 0 g/km (preliminary value)</p>
       </section>
-      <section className="tech-note">
+      {/*<section className="tech-note">
         <h3>Explore the Deepness.</h3>
         <ImageCarousel />
-      </section>
+      </section>*/}
       </main>
       <footer>
       </footer>
