@@ -7,6 +7,7 @@ import carImageFront from './images/porschetaycanf.png';
 import Counter from './components/Counter.js';
 import ButtonSection from './components/ButtonSection.js';
 import ImageCarousel from './components/ImageCarousel.js';
+import CarTags from './components/CarTags.js';
 
 
   
@@ -14,7 +15,6 @@ function App() {
   
   return (
     <div className="App">
-      
         
         <div className="video-container">
           <h1>TAYCAN</h1>
@@ -24,8 +24,6 @@ function App() {
         </div>
         <header>
           <h1 href="#">Car Configurator</h1>
-
-          
         </header>
       <main>
         <div className="imageContent">
@@ -33,8 +31,9 @@ function App() {
         </div>
         <section className="taycan-info">
           <h2>Porsche Taycan</h2>
+          <CarTags />
           <p>Porsche Taycan is an all-electric car produced by Porsche.</p>
-          <p>From <span>$103.000</span></p>
+          <p>From <span>103.000 €</span></p>
         </section>
       <section className="specifications">
       <div className="specs-list">

@@ -29,7 +29,6 @@ h1 {
   top: 7.5%;
   margin: 0;
   font-size: 2rem;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .video-container {
@@ -49,7 +48,6 @@ h1 {
   margin-bottom: 10px;
   font-size: 30rem;
   font-weight: 600;
-  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);
   padding-bottom: 20px;
   top: -45px;
 }
@@ -103,6 +101,8 @@ h1 {
   font-weight: 600;
 }
 
+
+
 .specifications {
   margin-top: 20px;
   text-align: center;
@@ -113,6 +113,14 @@ h1 {
 
 .specifications p span {
   font-weight: 600;
+}
+
+.specs-list{
+  display:flex;
+  justify-content: center;
+  gap: 50px;
+  flex-wrap: nowrap;
+  margin-top: 20px;
 }
 
 .imageFrontContent {
