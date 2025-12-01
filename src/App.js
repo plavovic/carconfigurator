@@ -1,6 +1,11 @@
 import React from 'react';
 import { useState, useEffect, useRef } from "react";
+import { Routes, Route } from "react-router-dom";
+
+
 import './App.css';
+
+
 import backgroundVideo from './videos/backgroundvideo.mp4';
 import carImage from './images/porschetaycan.png';
 import carImageFront from './images/porschetaycanf.png';
