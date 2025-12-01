@@ -2,30 +2,49 @@ import React from 'react';
 import { useState, useEffect, useRef } from "react";
 import { Routes, Route } from "react-router-dom";
 
+//import MainLayout from './layouts/MainLayout'; //layout component will be invoked later
 
-import './App.css';
+//import pages
+import Configurator from './pages/Configurator';
+import HomePage from './pages/HomePage';
+import Licenses from './pages/Licenses';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Services from './pages/Services';
+
+//import model pages
+import Cayenne from './pages/models/Cayenne';
+import Macan from './pages/models/Macan';
+import NineEleven from './pages/models/NineEleven';
+import Taycan from './pages/models/Taycan';
 
 
-import backgroundVideo from './videos/backgroundvideo.mp4';
+
+
+{/*import backgroundVideo from './videos/backgroundvideo.mp4';
 import carImage from './images/porschetaycan.png';
 import carImageFront from './images/porschetaycanf.png';
 import Counter from './components/Counter.js';
 import ButtonSection from './components/ButtonSection.js';
 import ImageCarousel from './components/ImageCarousel.js';
-import CarTags from './components/CarTags.js';
+import CarTags from './components/CarTags.js';*/} //imports of components used in Taycan.jsx
 
 
   
 function App() {
   
   return (
-    <div className="App">
+    <Routes>
+      <Route path="/" element={<Taycan />} />
+    </Routes>
+      );
+
+    //commented out content from Taycan.jsx
+    
+    {/*<div className="App">
         
         <div className="video-container">
           <h1>TAYCAN</h1>
-          {/*<video autoPlay muted loop className="background-video">
-          <source src={backgroundVideo} type="video/mp4" />
-          </video>*/}
         </div>
         <header>
           <h1 href="#">Car Configurator</h1>
@@ -54,15 +73,11 @@ function App() {
       <ButtonSection />
       <p>Electrical energy consumptioncombined: 19.1 – 16.7 kWh/100 km (preliminary value), CO₂-emissions combined: 0 g/km (preliminary value)</p>
       </section>
-      {/*<section className="tech-note">
-        <h3>Explore the Deepness.</h3>
-        <ImageCarousel />
-      </section>*/}
       </main>
       <footer>
       </footer>
-    </div>
-  );
+    </div>*/}
+
 }
 
 export default App;

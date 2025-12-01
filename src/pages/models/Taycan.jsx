@@ -1,10 +1,10 @@
 import React from 'react';
-import './App.css';
-import carImage from './images/porschetaycan.png';
-import carImageFront from './images/porschetaycanf.png';
-import Counter from './components/Counter.js';
-import ButtonSection from './components/ButtonSection.js';
-import CarTags from './components/CarTags.js';
+import './Taycan.css';
+import carImage from '../../images/porschetaycan.png';
+import carImageFront from '../../images/porschetaycanf.png';
+import Counter from '../../components/Counter.js';
+import ButtonSection from '../../components/ButtonSection.js';
+import CarTags from '../../components/CarTags.js';
 
 function App() {
   
