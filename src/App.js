@@ -22,7 +22,7 @@ function App() {
   
   return (
     <Routes>
-      <Route path="/" element={<Taycan />} />
+      <Route path="/" element={<Cayenne />} />
     </Routes>
       );
 }
