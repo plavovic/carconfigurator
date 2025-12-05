@@ -13,7 +13,7 @@ header {
 }
 
 h1 {
-  position: absolute;
+  position: relative;
   z-index: 2;
   color: white;
   max-width: 100%;
@@ -24,41 +24,64 @@ h1 {
 }
 
 .video-container {
-  position: absolute;
+  position: relative;
   width: 100%;
-  height: 50vh;
+  height: 60vh;
   overflow: hidden;
-  background-color: red;
+  background-color: red;  /* or red if you want */
 }
 
-.video-container h1 {
-  z-index: 2;
-  color: white;
+/* small logo text at top */
+.site-header {
+  position: absolute;
+  top: 10px;
+  left: 0;
   width: 100%;
-  text-align: top;
-  margin-bottom: 10px;
-  font-size: 30rem;
+  text-align: center;
+  z-index: 3;
+  background: transparent;
+}
+
+.site-header .logo {
+  margin: 0;
+  font-size: 1.6rem;
+  color: white;
+  font-family: 'Sofia Sans', cursive;
+}
+
+/* big CAYENNE text */
+.title {
+  position: absolute;
+  left: 50%;
+  top: 55%;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  font-size: clamp(6rem, 18vw, 20rem);
   font-weight: 600;
-  padding-bottom: 20px;
   font-family: sans-serif;
-  max-width: 100%;
+  color: #fff;
+  z-index: 1;   /* behind car */
 }
 
 .imageContent {
+  position: relative;
+  z-index: 2;   /* above text */
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 2;
-  position: relative;
-  margin-top: 5vh;
-  height: 60vh;
+  height: 100%;
 }
 
 .centered-image {
   width: 80%;
   max-width: 1200px;
-  margin-top: -30px;
   height: auto;
+}
+
+/* global reset so no random white bars */
+body {
+  margin: 0;
+  background: #000; /* or whatever */
 }
 
 .taycan-info {

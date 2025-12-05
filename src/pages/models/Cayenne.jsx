@@ -6,7 +6,7 @@ import Counter from '../../components/Counter.js';
 import ButtonSection from '../../components/ButtonSection.js';
 import CarTags from '../../components/CarTags.js';
 
-function App() {
+function Cayenne() {
   
   return (
     <div className="App">
@@ -48,4 +48,4 @@ function App() {
   );
 }
 
-export default App;
+export default Cayenne;

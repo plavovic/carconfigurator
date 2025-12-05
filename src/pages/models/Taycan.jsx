@@ -12,10 +12,10 @@ function App() {
     <div className="App">
         
         <div className="video-container">
-          <h1>TAYCAN</h1> // bug here 
+          <h1>TAYCAN</h1>  
         </div>
-        <header>
-          <h1 href="#">Car Configurator</h1>
+        <header >
+          <h1 className="header-text" href="#">Car Configurator</h1>
         </header>
       <main>
         <div className="imageContent">
