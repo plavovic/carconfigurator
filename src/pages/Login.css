@@ -1,20 +1,32 @@
-body {
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.background {
     background-image: url('../images/loginbackground.jpg');
-    background-position: center;
     background-size: cover;
+    background-position: center;
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    z-index: -4;
 }
 
 .container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: auto;
-    margin-top: 200px;
     background: white;
     padding-bottom: 30px;
-    width: 600px;
-    border-radius: 30px;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    width: 700px;
+    height: 100%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .header {
@@ -23,19 +35,20 @@ body {
     align-items: center;
     gap: 9px;
     width: 100%;
-    margin-top: 30px;
+    margin-top: 100px;
 }
 
 .text {
-    color: rgb(112, 16, 16);
+    color: black;
     font-size: 48px;
     font-weight: 700;
+    font-family: 'Sofia Sans', sans-serif;
 }
 
 .underline {
     width: 60px;
     height: 6px;
-    background: red;
+    background: black;
     border-radius: 9px;
 }
 
@@ -73,21 +86,26 @@ body {
 }
 
 .forgot-password {
-    padding-left: 60px;
-    margin-top: 25px;
+    margin-top: 27px;
+    padding-left: 0;
+    text-align: center;
+    width: 100%;
+    font-size: 20px;
     color: #797979;
-    font-size: 18px;
+    font-family: 'Sofia Sans', sans-serif;
 }
 
 .forgot-password span {
     color: red;
     cursor: pointer;
+    font-family: 'Sofia Sans', sans-serif;
 }
 
 .submit-container {
     display: flex;
     gap: 30px;
     margin: 60px auto;
+    font-family: 'Sofia Sans', sans-serif;
 }
 
 .submit {
@@ -97,7 +115,7 @@ body {
     width: 170px;
     height: 60px;
     color: white;
-    background: red;
+    background: black;
     border-radius: 50px;
     font-size: 19px;
     font-weight: 700px;
