@@ -50,13 +50,14 @@ html, body {
     height: 6px;
     background: black;
     border-radius: 9px;
+    margin-bottom: 40px;
 }
 
 .inputs {
     margin-top: 55px;
     display: flex;
     flex-direction: column;
-    gap: 25px;
+    gap: 40px;
 }
 
 .input {
@@ -67,6 +68,7 @@ html, body {
     height: 80px;
     background: rgb(238, 238, 238);
     border-radius: 6px;
+    margin-bottom: 15px;
 }
 
 .input img {
@@ -125,4 +127,38 @@ html, body {
 .gray{
     background: #eaeaea;
     color: #797979;
+}
+
+
+.form-wrapper {
+  transition: all 1.5s ease in;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.form-wrapper.Login {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.form-wrapper.Sign\ Up {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+
+.form-wrapper {
+  opacity: 0.75;
+}
+
+
+.submit:hover {
+    background: black;
+    transform: scale(1.03);
+    transition: 0.2s ease;
+}
+
+.gray:hover {
+    background: #d0d0d0;
+    transition: 0.2s ease;
 }
