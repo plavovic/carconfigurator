@@ -2,7 +2,9 @@
   display: flex;
   justify-content: center;
   gap: 12px;
+  font-family:  'Sofia Sans', sans-serif;
 }
+
 
 .car-tags span {
   padding: 6px 14px;
@@ -15,7 +17,6 @@
   transition: 0.25s ease;
 }
 
-/* Optional hover effect */
 .car-tags span::hover {
   background: #e2e2e2;
   border-color: #e2e2e2;

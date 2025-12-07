@@ -1,0 +1,71 @@
+.carcard-container {
+    max-width: 400px;
+    margin: 40px auto;
+    background: white;
+    border-radius: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    height: 650px;
+}
+
+.model-name {
+    font-size: 20px;
+    font-weight: bold;
+    font-family: 'Sofia Sans', sans-serif;
+    color: black;
+    text-align: center;
+    margin-top: -50px;
+}
+
+.car-tags {
+    margin-top: -5px;
+}
+
+.image {
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    margin-top: -80px;
+}
+
+.model-info p {
+    font-size: 24px;
+    font-weight: 600;
+    align-items: center;
+    font-family: 'Sofia Sans', sans-serif;
+    margin: 40px;
+    text-align: left;
+
+}
+
+.model-info p span {
+    color: gray;
+    display: block;
+    font-size: 13px;
+    font-weight: 300;
+    margin-top: 5px;
+}
+
+.button-section {
+    display: flex;
+    align-items: center;
+    margin-top: -20px;
+}
+
+.fuel-consumption p {
+    color: gray;
+    display: block;
+    font-size: 13px;
+    font-weight: 300;
+    margin-top: -23px;
+    margin-bottom: 10px;
+    font-family: 'Sofia Sans', sans-serif;
+    text-align: center;
+} 
+
+.carcard-container:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
