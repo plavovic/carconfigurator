@@ -1,0 +1,164 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.background {
+    background-image: url('../images/loginbackground.jpg');
+    background-size: cover;
+    background-position: center;
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    z-index: -4;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: white;
+    padding-bottom: 30px;
+    width: 700px;
+    height: 100%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 9px;
+    width: 100%;
+    margin-top: 100px;
+}
+
+.text {
+    color: black;
+    font-size: 48px;
+    font-weight: 700;
+    font-family: 'Sofia Sans', sans-serif;
+}
+
+.underline {
+    width: 60px;
+    height: 6px;
+    background: black;
+    border-radius: 9px;
+    margin-bottom: 40px;
+}
+
+.inputs {
+    margin-top: 55px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.input {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    width: 480px;
+    height: 80px;
+    background: rgb(238, 238, 238);
+    border-radius: 6px;
+    margin-bottom: 15px;
+}
+
+.input img {
+    margin: 0 30px;
+    width: 25px;
+    height: 25px;
+}
+
+.input input {
+    height: 50px;
+    width: 400px;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #797979;
+    font-size: 19px;
+}
+
+.forgot-password {
+    margin-top: 27px;
+    padding-left: 0;
+    text-align: center;
+    width: 100%;
+    font-size: 20px;
+    color: #797979;
+    font-family: 'Sofia Sans', sans-serif;
+}
+
+.forgot-password span {
+    color: red;
+    cursor: pointer;
+    font-family: 'Sofia Sans', sans-serif;
+}
+
+.submit-container {
+    display: flex;
+    gap: 30px;
+    margin: 60px auto;
+    font-family: 'Sofia Sans', sans-serif;
+}
+
+.submit {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 170px;
+    height: 60px;
+    color: white;
+    background: black;
+    border-radius: 50px;
+    font-size: 19px;
+    font-weight: 700px;
+    cursor: pointer;
+}
+
+.gray{
+    background: #eaeaea;
+    color: #797979;
+}
+
+
+.form-wrapper {
+  transition: all 1.5s ease in;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.form-wrapper.Login {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.form-wrapper.Sign\ Up {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+
+.form-wrapper {
+  opacity: 0.75;
+}
+
+
+.submit:hover {
+    background: black;
+    transform: scale(1.03);
+    transition: 0.2s ease;
+}
+
+.gray:hover {
+    background: #d0d0d0;
+    transition: 0.2s ease;
+}
