@@ -1,0 +1,96 @@
+.carcard-container {
+    max-width: 400px;
+    margin: 40px;                     /* ❗ no auto, just spacing around the card */
+    background: white;
+    border-radius: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 60px 20px 24px;
+    height: 650px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+
+    display: flex;                    /* ✅ flex column */
+    flex-direction: column;
+}
+
+
+.carcard-container:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* IMAGE */
+.image-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.image {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    margin-top: -100px;
+}
+
+/* MODEL NAME */
+.model-name {
+    font-size: 20px;
+    font-weight: bold;
+    font-family: 'Sofia Sans', sans-serif;
+    color: black;
+    text-align: center;
+    margin-top: -40px;
+}
+
+/* TAGS */
+.car-tags {
+    margin-top: -10px;
+    display: flex;
+    justify-content: center;
+}
+
+/* STATS */
+.model-info {
+    margin-top: -12px;
+}
+
+.model-info p {
+    font-size: 24px;
+    font-weight: 600;
+    font-family: 'Sofia Sans', sans-serif;
+    margin: 24px 20px;
+    text-align: left;
+}
+
+.model-info p span {
+    color: gray;
+    display: block;
+    font-size: 13px;
+    font-weight: 300;
+    margin-top: 5px;
+}
+
+/* FUEL CONSUMPTION */
+.fuel-consumption p {
+    color: gray;
+    font-size: 13px;
+    font-weight: 300;
+    margin-top: 5px;
+    margin-bottom: 20px;
+    font-family: 'Sofia Sans', sans-serif;
+    text-align: center;
+    padding: 0 10px;
+}
+
+/* BUTTONS */
+.button-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    
+    margin-top: -20px;                 /* ✅ pushes buttons to the bottom of the card */
+}
