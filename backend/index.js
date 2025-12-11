@@ -8,10 +8,44 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get("/api/test-db", async (req, res) => {
+app.get("/", (req, res) => {    //test performed
+  res.send("Backend is running ✅");
+});
+
+app.get("/api/options", async (req, res) => { //test performed
+  const { category } = req.query; // e.g. ?category=Exterior%20Color
+
+  try {
+    let result;
+
+    if (category) {
+      result = await pool.query(
+        `SELECT id, category, name, description, price_modifier, image_url
+         FROM options
+         WHERE category = $1
+         ORDER BY id`,
+        [category]
+      );
+    } else {
+      result = await pool.query(
+        `SELECT id, category, name, description, price_modifier, image_url
+         FROM options
+         ORDER BY category, id`
+      );
+    }
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error fetching options:", error);
+    res.status(500).json({ error: "Failed to fetch options" });
+  }
+});
+
+
+app.get("/api/test-db", async (req, res) => { //test performed
     try {
         const result = await pool.query("SELECT NOW()");
-        res.json(results.rows[0]);
+        res.json(result.rows[0]);
     }
 
     catch (error) {
