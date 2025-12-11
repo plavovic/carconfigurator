@@ -38,6 +38,7 @@ body {
 
 .map {
     width: 1500px;
+    z-index: 0;
 }
 
 .body-container{
