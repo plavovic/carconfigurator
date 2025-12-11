@@ -13,6 +13,20 @@ body {
 }
 
 
+
+.img-carousel-container {
+    padding: 50px;
+    display: flex;
+    align-items: center;
+}
+
+.img-carousel-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    font-size: 32px;
+}
+
 .body-container{
     margin-top: 100px;
 }

@@ -1,9 +1,11 @@
 import React from 'react';
 import "./HomePage.css";
+
 import TestCarCard from '../components/TestCarCard';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 import MapView from '../components/MapView';
+import ImageCarousel from '../components/ImageCarousel';
 
 import TaycanImage from "../images/porschetaycan.png";
 import CayenneImage from "../images/porschecayenne.png";
@@ -72,7 +74,13 @@ function HomePage () {
         consumption="Electric energy consumption combined (model range): 19.3 – 16.7 kWh/100 km, CO₂: 0 g/km (preliminary value)"
         />
             </div>
-        </div>     
+        </div>
+      <div className="img-carousel-container">
+        <h1>Explore Elegance In Action</h1>
+        
+        <ImageCarousel />
+
+      </div>     
       <div className="footer-container">
         <Footer />
       </div>

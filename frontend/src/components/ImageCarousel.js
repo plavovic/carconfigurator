@@ -1,72 +1,57 @@
-import React, { useState } from "react";
-import "./ImageCarousel.css";
+import React from "react";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
-// Updated image imports
-import img1 from "../images/taycan-motor1.jpg";
-import img2 from "../images/taycanmovement.webp";
-import img3 from "../images/taycanaerodynamics1.jpg";
-import img4 from "../images/taycanaerodynamics2.jpg";
 
-const slides = [
-  {
-    image: img1,
-    title: "Explore the extraordinary",
-    description: "Experience the perfect blend of design, comfort, and performance.",
-  },
-  {
-    image: img2,
-    title: "Dive into the difference",
-    description: "Every detail is crafted to make your drive unforgettable.",
-  },
-  {
-    image: img3,
-    title: "Step beyond the ordinary",
-    description: "Innovation meets luxury in every curve and corner.",
-  },
-  {
-    image: img4,
-    title: "Discover pure innovation",
-    description: "Redefining what it means to drive with confidence and style.",
-  },
-];
+const imageURLs = {
+  wall1: "https://images.ctfassets.net/s699s7kh1jys/1WtJwqt7rpVxLp5NbgFQFI/a3f4f597b72e726041870bd69a270484/porsche_911_wallpapers_carrera_gts_2_desktop.jpg",
+  wall2: "https://images.ctfassets.net/s699s7kh1jys/3vRxIaN45HiOejDXcdWaRK/0ec8a537ecf89284992ee6bb92315e71/porsche_911_wallpapers_carrera_gts_1_desktop.jpg",
+  wall3: "https://images.ctfassets.net/s699s7kh1jys/63ZVpMyNuQnEbx57zEz78V/a5e40fef137c0ba6cfb383de7466696a/taycan_wallpaper_gts_desktop_1.jpg",
+  wall4: "https://images.ctfassets.net/s699s7kh1jys/2PifzS162Gj5mosjr7YMu8/1cf25273d53964a32035c010b8ba37ba/taycan_wallpaper_gts_desktop_2.jpg",
+  wall5: "https://images.ctfassets.net/s699s7kh1jys/569MnSxPDP7Xo0F86Pjvpo/d33cc0f952568a1d345faa441b4a34cb/recharge_guide_download_zen_porsche_wallpapers_6.jpg",
+  wall6: "https://images.ctfassets.net/s699s7kh1jys/4c1iuDCInqkWmVEGel6U7O/407b596a24d514275e8b534bbf5a3fa3/recharge_guide_download_zen_porsche_wallpapers_7.jpg",
+  wall7: "https://images-porsche.imgix.net/-/media/B4897100F6C449E0B6F80592364DB8A7_9FCCFA0F06F34ED193CC6CB1D2A410C3_MA24T4BOX0007_KV_16zu9_cmyk",
+  wall8: "https://images-porsche.imgix.net/-/media/9E5C501E0F89466B89663E43645D3129_F776B7E09A35489A81F848AEE923BC1E_MA24T4BOX0015_cmyk"
+};
 
-export default function ImageCarousel() {
-  const [currentIndex, setCurrentIndex] = useState(0);
 
-  const prevSlide = () => {
-    setCurrentIndex((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
+
+
+
+const ImageCarousel = () => {
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 4500,
   };
 
-  const nextSlide = () => {
-    setCurrentIndex((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-  };
+  const images = Object.values(imageURLs);
 
   return (
-    <div className="carousel-container">
-      <button className="arrow left-arrow" onClick={prevSlide}>
-        &#10094;
-      </button>
-
-      <div className="carousel-wrapper">
-        <div
-          className="carousel-inner"
-          style={{ transform: `translateX(-${currentIndex * 100}%)` }}
-        >
-          {slides.map((slide, index) => (
-            <div className="carousel-slide" key={index}>
-              <img src={slide.image} alt={slide.title} className="carousel-image" />
-              <div className="carousel-text">
-                <h2>{slide.title}</h2>
-                <p>{slide.description}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <button className="arrow right-arrow" onClick={nextSlide}>
-        &#10095;
-      </button>
+    <div style={{ width: "1500px"}}>
+      <Slider {...settings}>
+        {images.map((src, i) => (
+          <div key={i}>
+            <img
+              src={src}
+              alt={`slide-${i}`}
+              style={{
+                width: "100%",
+                height: "auto",
+                borderRadius: "10px",
+                objectFit: "cover",
+              }}
+            />
+          </div>
+        ))}
+      </Slider>
     </div>
   );
-}
+};
+
+export default ImageCarousel;
