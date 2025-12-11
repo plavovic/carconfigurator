@@ -76,11 +76,18 @@ function HomePage () {
             </div>
         </div>
       <div className="img-carousel-container">
-        <h1>Explore Elegance In Action</h1>
+        <h1>Explore Elegance In Action.</h1>
         
         <ImageCarousel />
 
       </div>     
+      <div className="map-container">
+        <h1>Find Us.</h1>
+        <div className="map">
+        <MapView />
+        </div>
+        
+      </div>
       <div className="footer-container">
         <Footer />
       </div>
