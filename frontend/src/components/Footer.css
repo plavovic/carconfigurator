@@ -1,8 +1,7 @@
 .fcontainer {
     background-color: #121212;
-    padding-top: 20px;
-
 }
+
 
 .text-container {
     color: white;
@@ -10,6 +9,36 @@
     margin-left: 50px;
     display: flex;
     flex-direction: row;
+    margin-bottom: 0;
+    padding-top: 20px;
+}
+
+
+.social-media-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-right: 50px;
+    font-weight: 200;
+    font-size: 18px;
+}
+
+.call, .mail {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.social-media h1 {
+    font-size: 25px;
+    font-weight: 400;
+    margin: 0;
+}
+
+.social-media h2 {
+    font-weight: 200;
+    font-size: 20px;
+    margin: 0;
 }
 
 
@@ -21,15 +50,51 @@
 }
 
 .social-media-icons {
-    width: 35px;
-    height: 35px;
     display: flex;
     flex-direction: row;
-    width: 35px;
-    height: 35px;
+    gap: 20px;
+    margin-top: 20px;
 }
 
-.social-media .icon:hover{
+.icon {
+    width: 50px;
+    
+}
+
+.icon:hover{
     transform: scale(1.1);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.further-links {
+    color: white;
+    font-size: 20px; 
+    font-weight: 200;
+    cursor: pointer;
+    display: flex;
+    gap: 20px;
+    margin-left: 50px;
+}
+
+.further-links a:hover {
+    transform: scale(1.03);
+    box-shadow:rgba(255, 255, 255, 0.6)
+    
+}
+
+.underline {
+    width: viewport;
+    height: 1px;
+    margin: 20px;
+    background-color: white;
+
+}
+
+.license {
+    color: white;
+    font-weight: 100;
+    padding-left: 50px;
+    margin-top: 20px;
+    padding-right: 50px;
+    padding-bottom: 50px;
 }

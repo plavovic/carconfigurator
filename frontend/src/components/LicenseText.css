@@ -1,0 +1,9 @@
+.license-text {
+    font-family: 'Sofia Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 200;
+}
+
+.license-text a {
+    text-decoration: underline;
+}
