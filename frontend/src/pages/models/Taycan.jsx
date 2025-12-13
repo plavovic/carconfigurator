@@ -5,6 +5,7 @@ import carImageFront from '../../images/porschetaycanf.png';
 import Counter from '../../components/Counter.js';
 import ButtonSection from '../../components/ButtonSection.js';
 import CarTags from '../../components/CarTags.js';
+import NavBar from  '../../components/NavBar.jsx'; 
 
 function App() {
   
@@ -14,9 +15,9 @@ function App() {
         <div className="video-container">
           <h1>TAYCAN</h1>  
         </div>
-        <header >
-          <h1 className="header-text" href="#">Car Configurator</h1>
-        </header>
+      <div className="navbar-container">
+        <NavBar />
+      </div>
       <main>
         <div className="imageContent">
           <img src={carImage} alt="Car" className="centered-image"/>

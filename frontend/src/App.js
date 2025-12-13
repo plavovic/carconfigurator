@@ -3,7 +3,7 @@ import { Routes, Route } from "react-router-dom";
 
 
 
-//import Taycan from "./pages/models/Taycan.jsx";//
+//import Taycan from "./pages/models/Taycan.jsx"; 
 import HomePage from "./pages/HomePage.jsx";
 
 //bug in imports, pages should be imported one by one

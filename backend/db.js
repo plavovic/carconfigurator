@@ -1,10 +1,4 @@
-/**
- * PostgreSQL Database Connection Configuration
- * This file provides utilities for connecting to the PostgreSQL database
- * 
- * Installation:
- * npm install pg dotenv
- */
+
 
 const { Pool } = require('pg');
 require('dotenv').config();
