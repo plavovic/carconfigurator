@@ -6,6 +6,7 @@ import Counter from '../../components/Counter.js';
 import ButtonSection from '../../components/ButtonSection.js';
 import CarTags from '../../components/CarTags.js';
 import NavBar from  '../../components/NavBar.jsx'; 
+import Footer from '../../components/Footer.jsx';
 
 function App() {
   
