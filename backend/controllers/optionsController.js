@@ -4,7 +4,6 @@ const getOptions = async(req, res) => {
     const { category } = req.query;
 
     try{
-        
         let result;
 
         if(category){

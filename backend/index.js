@@ -9,6 +9,7 @@ app.use(cors());
 app.use(express.json());
 
 const optionsRoute = require('./routes/options');
+const categoriesRoute = require('./routes/categories');
 
 app.get("/", (req, res) => {    //test performed -- simple server check
   res.send("Backend is running ✅");
@@ -29,12 +30,14 @@ app.get("/api/test-db", async (req, res) => { //test performed -- database check
 
 app.use("/api/options", optionsRoute);
 
+app.use("/api/categories", categoriesRoute);
+
 
 
 
 
 const PORT = process.env.PORT || 5001;
 
-app.listen(process.env.PORT || 5001, () =>
+app.listen(PORT, () =>
     console.log(`Server running on port ${PORT}`)
 );
