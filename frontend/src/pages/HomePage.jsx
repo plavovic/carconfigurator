@@ -16,9 +16,9 @@ import NineElevenImage from "../images/porsche911.png";
 function HomePage () {
     return (
     <div className="container">
-        <div className="navbar-container">    
+        <header className="navbar-container">    
             <NavBar />
-        </div>
+        </header>
         <div className="body-container">
             <div className="header-section">
                 <h1>Configure Your Vehicle.</h1>
@@ -88,9 +88,9 @@ function HomePage () {
         </div>
         
       </div>
-      <div className="footer-container">
+      <footer className="footer-container">
         <Footer />
-      </div>
+      </footer>
     </div>
     )
 }

@@ -9,7 +9,7 @@ import HomePage from "./pages/HomePage.jsx";
 
 //bug in imports, pages should be imported one by one
 
-/*function App() {
+function App() {
   return (
     <Routes>
       <Route path ="/" element={<HomePage />} />
@@ -17,10 +17,10 @@ import HomePage from "./pages/HomePage.jsx";
   );
 }
 
-export default App;*/
 
 
-function App() {
+
+/*function App() {
   const [options, setOptions] = useState([]);
   const [error, setError] = useState("")
 
@@ -46,6 +46,6 @@ return (
     </div>
   );
 
-}
+}*/
 
 export default App;
