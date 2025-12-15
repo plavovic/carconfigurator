@@ -4,16 +4,16 @@ import { Routes, Route } from "react-router-dom";
 
 
 //import Taycan from "./pages/models/Taycan.jsx"; 
-// import HomePage from "./pages/HomePage.jsx";
+import HomePage from "./pages/HomePage.jsx";
 //import TestApi from "./pages/TestApi.jsx"; //page for testing apis
-import ChatBot from "./components/TestChatBot.jsx";
+//import ChatBot from "./components/TestChatBot.jsx";
 
 //bug in imports, pages should be imported one by one
 
 function App() {
   return (
     <Routes>
-      <Route path ="/" element={<ChatBot />} />
+      <Route path ="/" element={<HomePage />} />
     </Routes>
   );
 }

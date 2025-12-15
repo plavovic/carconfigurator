@@ -9,8 +9,8 @@ export default function TestChatBot() {
   const send = async () => {
     setError("");
     try {
-      const data = await sendMessage(text);   // MUST await
-      setReply(data.reply);                   // data is { reply: "..." }
+      const data = await sendMessage(text);
+      setReply(data.reply);
     } catch (e) {
       setError(e.message);
     }

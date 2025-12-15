@@ -6,6 +6,7 @@ import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 import MapView from '../components/MapView';
 import ImageCarousel from '../components/ImageCarousel';
+import ChatBotWidget from '../components/ChatBotWidget';
 
 import TaycanImage from "../images/porschetaycan.png";
 import CayenneImage from "../images/porschecayenne.png";
@@ -16,6 +17,7 @@ import NineElevenImage from "../images/porsche911.png";
 function HomePage () {
     return (
     <div className="container">
+        <ChatBotWidget />
         <header className="navbar-container">    
             <NavBar />
         </header>
