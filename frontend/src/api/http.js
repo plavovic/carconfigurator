@@ -1,16 +1,36 @@
-export async function http(url, options = {}) {
-  const res = await fetch(url, {
-    headers: {
-      "Content-Type": "application/json",
-      ...(options.headers || {}),
-    },
-    ...options,
-  });
+// http.js
+export const http = {
+  async request(url, options = {}) {
+    const res = await fetch(url, {
+      headers: {
+        "Content-Type": "application/json",
+        ...(options.headers || {}),
+      },
+      ...options,
+    });
 
-  if (!res.ok) {
-    const message = await res.text();
-    throw new Error(message || `HTTP ${res.status}`);
-  }
+    const contentType = res.headers.get("content-type") || "";
+    const isJson = contentType.includes("application/json");
 
-  return res.json();
-}
+    const payload = isJson ? await res.json() : await res.text();
+
+    if (!res.ok) {
+      const message = isJson ? (payload?.error || JSON.stringify(payload)) : payload;
+      throw new Error(message || `HTTP ${res.status}`);
+    }
+
+    return payload;
+  },
+
+  get(url, options = {}) {
+    return this.request(url, { ...options, method: "GET" });
+  },
+
+  post(url, body, options = {}) {
+    return this.request(url, {
+      ...options,
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+  },
+};

@@ -33,7 +33,7 @@ app.use("/api/options", optionsRoute);
 
 app.use("/api/categories", categoriesRoute);
 
-app.use("/api", chatbotRoute);
+app.use("/api", chatbotRoute); //tested in postman
 
 
 
