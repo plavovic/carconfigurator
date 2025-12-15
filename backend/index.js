@@ -10,6 +10,7 @@ app.use(express.json());
 
 const optionsRoute = require('./routes/options');
 const categoriesRoute = require('./routes/categories');
+const chatbotRoute = require('./routes/chatbot');
 
 app.get("/", (req, res) => {    //test performed -- simple server check
   res.send("Backend is running ✅");
@@ -31,6 +32,8 @@ app.get("/api/test-db", async (req, res) => { //test performed -- database check
 app.use("/api/options", optionsRoute);
 
 app.use("/api/categories", categoriesRoute);
+
+app.use("/api", chatbotRoute);
 
 
 

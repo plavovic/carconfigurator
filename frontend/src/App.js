@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 
 
-import Taycan from "./pages/models/Taycan.jsx"; 
+//import Taycan from "./pages/models/Taycan.jsx"; 
 import HomePage from "./pages/HomePage.jsx";
 import TestApi from "./pages/TestApi.jsx"; //page for testing apis
 
@@ -13,7 +13,7 @@ import TestApi from "./pages/TestApi.jsx"; //page for testing apis
 function App() {
   return (
     <Routes>
-      <Route path ="/" element={<Taycan />} />
+      <Route path ="/" element={<HomePage />} />
     </Routes>
   );
 }
