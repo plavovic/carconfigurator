@@ -5,7 +5,7 @@ import { Routes, Route } from "react-router-dom";
 
 //import Taycan from "./pages/models/Taycan.jsx"; 
 import HomePage from "./pages/HomePage.jsx";
-//import TestApi from "./pages/TestApi.jsx"; //page for testing apis
+import TestApi from "./pages/TestApi.jsx"; //page for testing apis
 //import ChatBot from "./components/TestChatBot.jsx";
 
 //bug in imports, pages should be imported one by one
@@ -13,7 +13,7 @@ import HomePage from "./pages/HomePage.jsx";
 function App() {
   return (
     <Routes>
-      <Route path ="/" element={<HomePage />} />
+      <Route path ="/" element={<TestApi />} />
     </Routes>
   );
 }
