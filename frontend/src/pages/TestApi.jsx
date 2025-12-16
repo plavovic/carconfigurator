@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import exportPdf from "../components/exportPdf";
 
 export default function TestApi() {
   const [options, setOptions] = useState([]);
@@ -111,9 +112,24 @@ export default function TestApi() {
                   : "None"}
               </b>
             </p>
+            
           </div>
         );
       })}
+      <div className="pdf-button">
+        <button onClick={() => exportPdf({ selected, basePrice, total })}
+        style={{
+        padding: 10,
+        borderRadius: 8,
+        border: "1px solid #ccc",
+        cursor: "pointer",
+        marginBottom: 16,
+        }}>
+        Export PDF
+      </button>
+
+      </div>
     </div>
+    
   );
 }
