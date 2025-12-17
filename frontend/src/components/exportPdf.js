@@ -35,7 +35,7 @@ export default function exportPdf({ basePrice, total, selected = {}, selectedTec
 
   y += 4;
 
-  // Other categories (single)
+  // other categories - single
   doc.setFontSize(13);
   doc.text("Other selections:", 14, y);
   y += 8;
