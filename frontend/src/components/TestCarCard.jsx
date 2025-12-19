@@ -1,8 +1,4 @@
 import React from "react";
-import TaycanImage from "../images/porschetaycan.png";
-import CayenneImage from "../images/porschecayenne.png";
-import MacanImage from "../images/porschemacan.png";
-import NineElevenImage from "../images/porsche911.png";
 import CarTags from "./CarTags";
 import CardButtons from "./CardButtons";
 import "./TestCarCard.css";

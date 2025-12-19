@@ -21,12 +21,15 @@ function HomePage () {
         <header className="navbar-container">    
             <NavBar />
         </header>
+        
+        {/* White decorative background canvas */}
         <div className="body-container">
             <div className="header-section">
                 <h1>Configure Your Vehicle.</h1>
             </div>
-            
-            
+        </div>
+        
+        {/* Cars overlay - spans full screen */}
         <div className="cars-grid">
         <TestCarCard 
         image={TaycanImage}
@@ -43,7 +46,7 @@ function HomePage () {
         <TestCarCard 
         image={CayenneImage}
         model="Cayenne"
-        tags={["SUV", "Hybrid"]} 
+        tags={["SUV", "Petrol"]} 
         stats={[
           { value: "4.9s", label: "Acceleration 0–100 km/h" },
           { value: "470hp", label: "Max Power" },
@@ -55,7 +58,7 @@ function HomePage () {
         <TestCarCard 
         image={NineElevenImage}
         model="911 Carrera"
-        tags={["Coupe", "Iconic"]}
+        tags={["Coupe", "Petrol"]}
         stats={[
           { value: "4.2s", label: "Acceleration 0–100 km/h" },
           { value: "385hp", label: "Power" },
@@ -75,7 +78,6 @@ function HomePage () {
         ]}
         consumption="Electric energy consumption combined (model range): 19.3 – 16.7 kWh/100 km, CO₂: 0 g/km (preliminary value)"
         />
-            </div>
         </div>
       <div className="img-carousel-container">
         <h1>Explore Elegance In Action.</h1>
