@@ -1,0 +1,32 @@
+// Static image links mapping by option name/category
+// Used as a fallback or override when DB doesn't provide image_url
+
+export const colorImageLinks = {
+  'Jet Black': 'https://configurator.porsche.com/assets/exteriors/studio_2T.jpg?h=9a82fb77ae0c0d574e6c56101118d44b',
+  'Alpine White': 'https://configurator.porsche.com/assets/exteriors/studio_0Q.jpg?h=813794269136e33739035515b64c81ac',
+  'Agate Grey': 'https://configurator.porsche.com/assets/exteriors/studio_1H.jpg?h=5f7e3f1ed071470418f251c2a228c6c3',
+  'Miami Blue': 'https://configurator.porsche.com/assets/exteriors/studio_O1.jpg?h=4e5aee0220316349af1e65648448fd09',
+  'Racing Yellow': 'https://configurator.porsche.com/assets/exteriors/studio_D9.jpg?h=990b87ab08a6f863206dfa5564601a8b',
+};
+
+export const wheelImageLinks911 = {
+  '19" Standard': 'https://prs.porsche.com/iod/image/WW/9921B2/1/N4Igxg9gdgZglgcxALlAQynAtmgLnaAZxQG0BdAGnDSwFMAnNFUOAExRFoA9cBaAGwgB3XjHrQ+-WjD5CAFrVr8QVCAAd8RZiABuaenAy4OrWoQDWudSAC+NqrSg644qHSjHUINhwDyaQjhiVQ0CKGJUOyp+RDl8KCQvH2QQABEAQQBNFRB1TXDmKJA1cVYAVzBPFnYUgE5agCYARgAhBpy8sIjQSDKPegBPAGEIUw4AdXGcrFGlTNp9FAaABgaANhD8iJIQZYBFHKaAFQBmHJOWs6oAVgAOAA0ctYBJK5AAdnSAaRz3gHFajlagAtACiOVBAFl2lQ-k0AGI5Z7jN4AKVBbwAMn8jqkAEqYnIABQAEjk9td0uS8YCqHsAGpvACqRNpIHpmPaZDs9hAhFouHiCG6IBgEHoOE8IAAVmpaEgqLhGOE1PpHJ4YGh+Py7EA?clientId=icc',
+  '20" Carrera Classic': 'https://prs.porsche.com/iod/image/WW/9921B2/1/N4Igxg9gdgZglgcxALlAQynAtmgLnaAZxQG0BdAGnDSwFMAnNFUOAExRFoA9cBaAGwgB3XjHrQ+-WjD5CAFrVr8QVCAAd8RZiABuaenAy4OrWoQDWudSAC+NqrSg644qHSjHUINhwDyaQjhiVQ0CKGJUOyp+RDl8KCQvH2QQABEAQQBNFRB1TXDmKJA1cVYAVzBPFnYUgE5agCYARgAhBpy8sIjQSDKPegBPAGEIUw4AdXGcrFGlTNp9FAaABgaANhD8iJIQZYBFHKaAFQBmHJOWs6oAVlqWnLWASSuQAHZ0gGkc14BxWpzagAtACiOWBAFl2lQfk0AGI5R7jF4AKWBLwAMj8jqkAEronIABQAEjk9td0qScf8qHsAGovACqBOpIFp6PaZDs9hAhFouHiCG6IBgEHoOE8IAAVmpaEgqLhGOE1PpHJ4YGh+Ly7EA?clientId=icc',
+  '21" Carrera S': 'https://prs.porsche.com/iod/image/WW/9921B2/1/N4Igxg9gdgZglgcxALlAQynAtmgLnaAZxQG0BdAGnDSwFMAnNFUOAExRFoA9cBaAGwgB3XjHrQ+-WjD5CAFrVr8QVCAAd8RZiABuaenAy4OrWoQDWudSAC+NqrSg644qHSjHUINhwDyaQjhiVQ0CKGJUOyp+RDl8KCQvH2QQABEAQQBNFRB1TXDmKJA1cVYAVzBPFnYUgE5agCYARgAhBpy8sIjQSDKPegBPAGEIUw4AdXGcrFGlTNp9FAaABgaANhD8iJIQZYBFHKaAFQBmHJOWs6o1gEkrkAB2dIBpHIeAcVqc2oAtAFEckMABxHHJ-ACy7So7yaADEcjdxvcAFJ-e4AGXeR1SACV0TkAAoACRyewArOlSTivlQ9gA1e4AVQJNJAdPR7TIdnsIEItFw8QQ3RAMAg9BwnhAACs1LQkFRcIxwmp9I5PDA0Pw+XYgA?clientId=icc',
+  '22" Turbo': 'https://prs.porsche.com/iod/image/WW/9921B2/1/N4Igxg9gdgZglgcxALlAQynAtmgLnaAZxQG0BdAGnDSwFMAnNFUOAExRFoA9cBaAGwgB3XjHrQ+-WjD5CAFrVr8QVCAAd8RZiABuaenAy4OrWoQDWudSAC+NqrSg644qHSjHUINhwDyaQjhiVQ0CKGJUOyp+RDl8KCQvH2QQABEAQQBNFRB1TXDmKJA1cVYAVzBPFnYUgE5agCYARgAhBpy8sIjQSDKPegBPAGEIUw4AdXGcrFGlTNp9FAaABgaANhD8iJIQZYBFHKaAFQBmHJOWs6oAVlr0nLWASSuQAHZ0gGkc14BxWpzagAtACiOWBAFl2lQfk0AGI5R7jF4AKWBLwAMj8jqkAEronIABQAEjk9td7lQ9jj-pSAGovACqBJpIFp6PaZDs9hAhFouHiCG6IBgEHoOE8IAAVmpaEgqLhGOE1PpHJ4YGh+Ly7EA?clientId=icc',
+};
+
+export const techImageLinks911 = {
+  'Premium Sound System': 'https://configurator.porsche.com/model/2026/9921B2/common/detail_M9VL_l_0.jpg?h=2787fdc425e071797fa724e0c064ef8d',
+  'Panoramic Sunroof': 'https://configurator.porsche.com/model/2026/9921B2/common/detail_M3FE_l_0.jpg?h=30a716b92ac4c000677721b4279f17b0',
+  'HD‑Matrix Headlights': 'https://configurator.porsche.com/model/2026/9921B2/common/detail_M8IU_l_0.jpg?h=8b73bd638d413078ba1b7d27d67e86f6',
+  'Power Steering Plus': 'https://configurator.porsche.com/model/2026/9921B2/common/detail_M1N3_l_0.jpg?h=036b4e16e33b41aeaeef24a177b533c3',
+};
+
+// Interior color swatch fallbacks if DB hex_color missing
+export const interiorHexColors = {
+  'Black Leather': '#000000',
+  'Bordeaux Leather': '#800020',
+  'Cognac Leather': '#8B4513',
+  'Beige Leather': '#F5F5DC',
+};

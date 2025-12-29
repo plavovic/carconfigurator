@@ -1,7 +1,10 @@
 // http.js
+const API_URL = "http://localhost:5000";
+
 export const http = {
   async request(url, options = {}) {
-    const res = await fetch(url, {
+    const fullUrl = url.startsWith("http") ? url : `${API_URL}${url}`;
+    const res = await fetch(fullUrl, {
       headers: {
         "Content-Type": "application/json",
         ...(options.headers || {}),

@@ -11,6 +11,8 @@ app.use(express.json());
 const optionsRoute = require('./routes/options');
 const categoriesRoute = require('./routes/categories');
 const chatbotRoute = require('./routes/chatbot');
+const modelsRoute = require('./routes/models');
+const configurationsRoute = require('./routes/configurations');
 
 app.get("/", (req, res) => {    //test performed -- simple server check
   res.send("Backend is running ✅");
@@ -32,6 +34,10 @@ app.get("/api/test-db", async (req, res) => { //test performed -- database check
 app.use("/api/options", optionsRoute);
 
 app.use("/api/categories", categoriesRoute);
+
+app.use("/api/models", modelsRoute);
+
+app.use("/api/configurations", configurationsRoute);
 
 app.use("/api", chatbotRoute); //tested in postman
 

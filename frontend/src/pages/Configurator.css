@@ -4,15 +4,18 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  min-height: auto;
-  overflow-y: visible;
-}
+  min-height: 100vh; /* ensure page can scroll */
+  padding-bottom: 80px;
+  overflow-y:scroll; /* space for sticky bar */
+   /* show scrollbar when content exceeds viewport */
+} 
 
 .configurator-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 16px;
+  margin-top:50px;
 }
 
 .models-grid {
@@ -22,9 +25,15 @@
 }
 
 .options-grid {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 1024px) {
+  .options-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .sticky-pricebar {
@@ -39,6 +48,17 @@
   align-items: center;
   justify-content: space-between;
   margin-top: 24px;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .models-grid {
+    grid-template-columns: 1fr;
+  }
+  .sticky-pricebar {
+    flex-direction: column;
+    gap: 12px;
+  }
 }
 
 .configurator-page h1 {

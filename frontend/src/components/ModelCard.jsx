@@ -2,6 +2,9 @@ import React from "react";
 
 export default function ModelCard({ model, image, selected, onSelect }) {
   const price = Number(model.base_price || 0);
+  
+  // Use API-generated image if available, otherwise fallback to provided image
+  const imageUrl = model.images?.threeQuarter || model.image_url || image;
 
   return (
     <button
@@ -21,9 +24,15 @@ export default function ModelCard({ model, image, selected, onSelect }) {
     >
       <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
         <img
-          src={image}
+          src={imageUrl}
           alt={model.name}
           style={{ width: "100%", maxHeight: 180, objectFit: "contain" }}
+          onError={(e) => {
+            // Fallback to provided image if API image fails
+            if (e.target.src !== image) {
+              e.target.src = image;
+            }
+          }}
         />
       </div>
       <div style={{ fontSize: 20, fontWeight: 700 }}>{model.name}</div>
