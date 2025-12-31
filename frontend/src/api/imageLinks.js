@@ -18,9 +18,18 @@ export const wheelImageLinks911 = {
 
 export const techImageLinks911 = {
   'Premium Sound System': 'https://configurator.porsche.com/model/2026/9921B2/common/detail_M9VL_l_0.jpg?h=2787fdc425e071797fa724e0c064ef8d',
-  'Panoramic Sunroof': 'https://configurator.porsche.com/model/2026/9921B2/common/detail_M3FE_l_0.jpg?h=30a716b92ac4c000677721b4279f17b0',
+  'Panoramic Sunroof': 'https://configurator.porsche.com/model/2026/9921B2/common/detail_M3FD_l_0.jpg?h=4ed2555cbdb862796ffc75e6ee004a88',
+  'Electric slide/tilt sunroof': 'https://configurator.porsche.com/model/2026/9921B2/common/detail_M3FD_l_0.jpg?h=4ed2555cbdb862796ffc75e6ee004a88',
   'HD‑Matrix Headlights': 'https://configurator.porsche.com/model/2026/9921B2/common/detail_M8IU_l_0.jpg?h=8b73bd638d413078ba1b7d27d67e86f6',
   'Power Steering Plus': 'https://configurator.porsche.com/model/2026/9921B2/common/detail_M1N3_l_0.jpg?h=036b4e16e33b41aeaeef24a177b533c3',
+};
+
+// Interior gallery images for preview
+export const interiorImageLinks = {
+  'Black Leather': 'https://prs.porsche.com/iod/image/WW/9921B2/1/N4Igxg9gdgZglgcxALlAQynAtmgLnaAZxQG0BdAGnDSwFMAnNFUOAExRDilwFoZ7ovVmkIALAEYQ09dlQgAHfEWYgAbtLgZcHVrUIBrXApABfE1VpRVcAVDrcVbDgHVRcXAwgQsAAgAKEPSEYKK0IHKKBFDEqGZUADaIovhQSKic7MggACIAggCa4SAKStHMcSDyAqwArmDa6U5ZAJzNAEwAjABCbUUlUTGgkDXc9ACeAMIQui7ORVjTtPH5tNIobQAMbQBsEaUxJCAdACoAzEWnXedUpwBi2UUArM25RdsAktcgAOy5ANJFb4AcWaRWaAC0AKJFXIdGEADSKkIAsr0qECOrciu9nF8AFKQr4AGSBx2yACUiUUAIqPV5Uank0EMgBqXwAqn5mSAWUTemQzOYQIRaLgUghBiAYIEcA0QAAreS0JBUXCMaLyaSWBowNDxEVmIA?clientId=icc',
+  'Bordeaux Leather': 'https://prs.porsche.com/iod/image/WW/9921B2/1/N4Igxg9gdgZglgcxALlAQynAtmgLnaAZxQG0BdAGnDSwFMAnNFUOAExRDilwFoZ7ovVmkIALAEYQ09dlQgAHfEWYgAbtLgZcHVrUIBrXApABfE1VpRVcAVDrcVbDgHVRcXAwgQsAAgAKEPSEYKK0IHKKBFDEqGZUADaIovhQSKic7MggACIAggCa4SAKStHMcSDyAqwArmDa6U5ZAJzNAEwAjABCbUUlUTGgkDXc9ACeAMIQui7ORVjTtPH5tNIobQAMbQBsEaUxJCAdACoAzEWnXedUpwBi2UUArM25RdsAktcgAOy5ANJFb4AcWaRWaAC0AKJFXIdIqQgCyvSoQI6tyK72cXwAUpCvgAZIHHbIAJXxRXxAA0igBFR6vKg0kmgxkANS+AFU-CyQKz8b0yGZzCBCLRcCkEIMQDBAjgGiAAFbyWhIKi4RjReTSSwNGBoeKisxAA?clientId=icc',
+  'Cognac Leather': 'https://prs.porsche.com/iod/image/WW/9921B2/1/N4Igxg9gdgZglgcxALlAQynAtmgLnaAZxQG0BdAGnDSwFMAnNFUOAExRDilwFoZ7ovVmkIALAEYQ09dlQgAHfEWYgAbtLgZcHVrUIBrXApABfE1VpRVcAVDrcVbDgHVRcXAwgQsAAgAKEPSEYKK0IHKKBFDEqGZUADaIovhQSKic7MggACIAggCa4SAKStHMcSDyAqwArmDa6U5ZAJzNAEwAjABCbUUlUTGgkDXc9ACeAMIQui7ORVjTtPH5tNIobQAMbQBsEaUxJCAdACoAzEWnXedUpwBi2UUArM25RdsAktcgAOy5ANJFb4AcWaRWaAC0AKJFXIdIqQgCyvSoQI6tyKAAlClR3s4vgApSFfAAyQOO2QASsSigBFR6vKg0imgxkANS+AFU-CyQKzib0yGZzCBCLRcCkEIMQDBAjgGiAAFbyWhIKi4RjReTSSwNGBoeKisxAA?clientId=icc',
+  'Beige Leather': 'https://prs.porsche.com/iod/image/WW/9921B2/1/N4Igxg9gdgZglgcxALlAQynAtmgLnaAZxQG0BdAGnDSwFMAnNFUOAExRDilwFoZ7ovVmkIALAEYQ09dlQgAHfEWYgAbtLgZcHVrUIBrXApABfE1VpRVcAVDrcVbDgHVRcXAwgQsAAgAKEPSEYKK0IHKKBFDEqGZUADaIovhQSKic7MggACIAggCa4SAKStHMcSDyAqwArmDa6U5ZAJzNAEwAjABCbUUlUTGgkDXc9ACeAMIQui7ORVjTtPH5tNIobQAMbQBsEaUxJCAdACoAzEWnXedUpwBi2UUArM25RdsAktcgAOy5ANJFb4AcWaRWaAC0AKJFXIdIpdABKRUhAFlelQgR1bkV3s4vgApSFfAAyQOO2QRxKKAEVHq8qNSEaCGQA1L4AVT8zJALOJvTIZnMIEItFwKQQgxAMECOAaIAAVvJaEgqLhGNF5NJLA0YGh4iKzEA?clientId=icc',
 };
 
 // Interior color swatch fallbacks if DB hex_color missing

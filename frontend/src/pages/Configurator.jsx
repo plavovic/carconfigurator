@@ -7,6 +7,8 @@ import ModelCard from "../components/ModelCard";
 import OptionCard from "../components/OptionCard";
 import exportPdf from "../components/exportPdf";
 import NavBar from "../components/NavBar";
+import carreraImageMatrix from "../data/carreraImageMatrix.json";
+import { interiorImageLinks } from "../api/imageLinks";
 
 import TaycanImage from "../images/porschetaycan.png";
 import NineElevenImage from "../images/porsche911.png";
@@ -21,6 +23,8 @@ const modelImages = {
   Macan: MacanImage,
 };
 
+const angleOptions = ['threeQuarter', 'side', 'rear', 'interior'];
+
 function Stepper() {
   const { model, setModel, selected, setSelected, toggleOption, clearCategory, total, basePrice } = useConfigurator();
   const [models, setModels] = useState([]);
@@ -28,7 +32,7 @@ function Stepper() {
   const [step, setStep] = useState(1); // 1: model, 2: options, 3: summary
   const [error, setError] = useState("");
   const [previewImages, setPreviewImages] = useState(null);
-  const [currentImageAngle, setCurrentImageAngle] = useState('threeQuarter'); // front, threeQuarter, side, rear, interior
+  const [currentImageAngle, setCurrentImageAngle] = useState('threeQuarter'); // available angles defined in angleOptions
 
   useEffect(() => {
     (async () => {
@@ -88,6 +92,80 @@ function Stepper() {
     }, {});
   }, [options]);
 
+  // Ensure a default 911 baseline is selected (Jet Black + 19" Standard) so preview has an image immediately
+  useEffect(() => {
+    if (!model || !options.length) return;
+    const is911 = (model.name || '').includes('911');
+    if (!is911) return;
+
+    const jetBlack = options.find((o) => o.category === 'Exterior Color' && o.name.toLowerCase().includes('black'));
+    const nineteenStd = options.find((o) => o.category === 'Wheels' && o.name.includes('19" Standard'));
+
+    if (!jetBlack && !nineteenStd) return;
+
+    setSelected((prev) => {
+      const next = { ...prev };
+      if (jetBlack && !(next['Exterior Color']?.length)) next['Exterior Color'] = [jetBlack];
+      if (nineteenStd && !(next['Wheels']?.length)) next['Wheels'] = [nineteenStd];
+      return next;
+    });
+  }, [model, options, setSelected]);
+
+  const selectedColor = selected['Exterior Color']?.[0]?.name;
+  const selectedWheel = selected['Wheels']?.[0]?.name;
+  const selectedInterior = selected['Interior']?.[0]?.name;
+
+  const colorKey = useMemo(() => {
+    if (!selectedColor) return null;
+    const lc = selectedColor.toLowerCase();
+    if (lc.includes('black')) return 'Black';
+    if (lc.includes('white')) return 'White';
+    if (lc.includes('grey') || lc.includes('gray')) return 'Grey';
+    if (lc.includes('blue')) return 'Blue';
+    if (lc.includes('yellow')) return 'Yellow';
+    return null;
+  }, [selectedColor]);
+
+  const wheelKey = useMemo(() => {
+    if (!selectedWheel) return null;
+    const lc = selectedWheel.toLowerCase();
+    if (lc.includes('19')) return '19" Standard';
+    if (lc.includes('20') || lc.includes('classic')) return '20" Carrera Classic';
+    if (lc.includes('21') || lc.includes('carrera s')) return '21" Carrera S';
+    if (lc.includes('22') || lc.includes('turbo')) return '22" Turbo';
+    return null;
+  }, [selectedWheel]);
+
+  const staticImages911 = useMemo(() => {
+    const name = model?.name || '';
+    if (!name.includes('911') || !colorKey || !wheelKey) return null;
+    const byColor = carreraImageMatrix[colorKey];
+    const byWheel = byColor?.[wheelKey];
+    if (!byWheel) return null;
+    const result = {};
+    angleOptions.forEach((angle) => {
+      if (byWheel[angle]) result[angle] = byWheel[angle];
+    });
+    return Object.keys(result).length ? result : null;
+  }, [model, colorKey, wheelKey]);
+
+  const imagesToUse = useMemo(() => {
+    const base = staticImages911 || previewImages || null;
+    if (!base) return null;
+    const withInterior = { ...base };
+    const interiorImg = selectedInterior && interiorImageLinks[selectedInterior];
+    if (interiorImg) withInterior.interior = interiorImg;
+    return Object.keys(withInterior).length ? withInterior : null;
+  }, [staticImages911, previewImages, selectedInterior]);
+
+  useEffect(() => {
+    if (!imagesToUse) return;
+    if (!imagesToUse[currentImageAngle]) {
+      const firstAvailable = angleOptions.find((a) => imagesToUse[a]);
+      if (firstAvailable) setCurrentImageAngle(firstAvailable);
+    }
+  }, [imagesToUse, currentImageAngle]);
+
   // When changing model, reset selections
   useEffect(() => {
     setSelected({});
@@ -127,14 +205,14 @@ function Stepper() {
 
       {step === 2 && (
         <>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 24, height: 'calc(100vh - 200px)' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 24, marginBottom: 32 }}>
             {/* Live Preview Section - Fixed */}
             <div style={{ position: 'sticky', top: 20, alignSelf: 'start' }}>
               <h3>Live Preview</h3>
-              <div style={{ background: '#f9f9f9', borderRadius: 12, padding: 16 }}>
-                {previewImages && previewImages[currentImageAngle] && (
+              <div style={{ background: '#f9f9f9', borderRadius: 12, padding: 24 }}>
+                {imagesToUse && imagesToUse[currentImageAngle] ? (
                   <img 
-                    src={previewImages[currentImageAngle]} 
+                    src={imagesToUse[currentImageAngle]} 
                     alt="Car preview"
                     style={{ width: '100%', height: 'auto', borderRadius: 8 }}
                     onError={(e) => {
@@ -142,31 +220,88 @@ function Stepper() {
                       e.target.src = modelImages[model?.name] || TaycanImage;
                     }}
                   />
+                ) : (
+                  <img 
+                    src={modelImages[model?.name] || TaycanImage}
+                    alt="Car preview fallback"
+                    style={{ width: '100%', height: 'auto', borderRadius: 8 }}
+                  />
                 )}
                 {/* Image angle selector */}
-                <div style={{ display: 'flex', gap: 8, marginTop: 12, justifyContent: 'center' }}>
-                  {['front', 'threeQuarter', 'side', 'rear', 'interior'].map(angle => (
-                    <button
-                      key={angle}
-                      onClick={() => setCurrentImageAngle(angle)}
-                      style={{
-                        padding: '6px 12px',
-                        border: currentImageAngle === angle ? '2px solid black' : '1px solid #ccc',
-                        borderRadius: 6,
-                        background: currentImageAngle === angle ? '#f5f5f5' : 'white',
-                        cursor: 'pointer',
-                        fontSize: 12
-                      }}
-                    >
-                      {angle === 'threeQuarter' ? '3/4' : angle.charAt(0).toUpperCase() + angle.slice(1)}
-                    </button>
+                <div style={{ display: 'flex', gap: 8, marginTop: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+                  {angleOptions.map(angle => (
+                    imagesToUse && imagesToUse[angle] ? (
+                      <button
+                        key={angle}
+                        onClick={() => setCurrentImageAngle(angle)}
+                        style={{
+                          padding: '6px 12px',
+                          border: currentImageAngle === angle ? '2px solid black' : '1px solid #ccc',
+                          borderRadius: 6,
+                          background: currentImageAngle === angle ? '#f5f5f5' : 'white',
+                          cursor: 'pointer',
+                          fontSize: 12
+                        }}
+                      >
+                        {angle === 'threeQuarter' ? '3/4' : angle.charAt(0).toUpperCase() + angle.slice(1)}
+                      </button>
+                    ) : null
                   ))}
+                </div>
+              </div>
+              
+              {/* Configuration Summary Panel */}
+              <div style={{ background: 'white', border: '1px solid #e0e0e0', borderRadius: 12, padding: 20, marginTop: 16 }}>
+                <h4 style={{ margin: '0 0 16px 0', fontSize: 18, fontWeight: 600 }}>Current Configuration</h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: 12, borderBottom: '1px solid #f0f0f0' }}>
+                    <span style={{ fontWeight: 500 }}>Model:</span>
+                    <span style={{ color: '#666' }}>{model?.name}</span>
+                  </div>
+                  {selectedColor && (
+                    <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: 12, borderBottom: '1px solid #f0f0f0' }}>
+                      <span style={{ fontWeight: 500 }}>Color:</span>
+                      <span style={{ color: '#666' }}>{selectedColor}</span>
+                    </div>
+                  )}
+                  {selectedWheel && (
+                    <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: 12, borderBottom: '1px solid #f0f0f0' }}>
+                      <span style={{ fontWeight: 500 }}>Wheels:</span>
+                      <span style={{ color: '#666' }}>{selectedWheel}</span>
+                    </div>
+                  )}
+                  {selected['Interior']?.[0] && (
+                    <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: 12, borderBottom: '1px solid #f0f0f0' }}>
+                      <span style={{ fontWeight: 500 }}>Interior:</span>
+                      <span style={{ color: '#666' }}>{selected['Interior'][0].name}</span>
+                    </div>
+                  )}
+                  {(() => {
+                    const excludeFromAccessories = ['Exterior Color', 'Interior', 'Wheels'];
+                    const accessories = Object.entries(selected)
+                      .filter(([category]) => !excludeFromAccessories.includes(category))
+                      .flatMap(([_, items]) => items);
+                    
+                    if (accessories.length > 0) {
+                      return (
+                        <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: 12, borderBottom: '1px solid #f0f0f0' }}>
+                          <span style={{ fontWeight: 500 }}>Accessories:</span>
+                          <span style={{ color: '#666' }}>{accessories.length}</span>
+                        </div>
+                      );
+                    }
+                    return null;
+                  })()}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: 8 }}>
+                    <span style={{ fontWeight: 600, fontSize: 16 }}>Total Price:</span>
+                    <span style={{ fontWeight: 700, fontSize: 18, color: '#000' }}>${total.toLocaleString()}</span>
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Options Section - Scrollable */}
-            <div style={{ overflowY: 'auto', paddingRight: 12 }}>
+            <div style={{ overflowY: 'auto', maxHeight: 'calc(100vh - 200px)' }}>
               <h2>Customize Options</h2>
               {error && <p style={{ color: "red" }}>{error}</p>}
               {Object.entries(grouped).map(([category, items]) => {
@@ -177,7 +312,27 @@ function Stepper() {
                       <h3 style={{ margin: 0 }}>{category}</h3>
                       <button
                         onClick={() => clearCategory(category)}
-                        style={{ padding: "6px 10px", border: "1px solid #ccc", borderRadius: 8, background: "white" }}
+                        style={{ 
+                          padding: "8px 16px", 
+                          border: "1px solid #d0d0d0", 
+                          borderRadius: 6, 
+                          background: "white",
+                          fontSize: 13,
+                          fontWeight: 500,
+                          color: '#666',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.background = '#f5f5f5';
+                          e.target.style.borderColor = '#999';
+                          e.target.style.color = '#333';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.background = 'white';
+                          e.target.style.borderColor = '#d0d0d0';
+                          e.target.style.color = '#666';
+                        }}
                       >
                         Clear
                       </button>
@@ -195,48 +350,70 @@ function Stepper() {
                   </div>
                 );
               })}
+              
+              {/* Navigation Buttons */}
+              <div style={{ display: 'flex', gap: 16, marginTop: 32, paddingTop: 24, borderTop: '2px solid #e0e0e0' }}>
+                <button 
+                  onClick={() => setStep(1)}
+                  style={{
+                    flex: 1,
+                    padding: '14px 32px',
+                    border: '2px solid #000',
+                    borderRadius: 8,
+                    background: 'white',
+                    color: '#000',
+                    fontSize: 16,
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                  }}
+                  onMouseEnter={(e) => e.target.style.background = '#f5f5f5'}
+                  onMouseLeave={(e) => e.target.style.background = 'white'}
+                >
+                  ← Back
+                </button>
+                <button 
+                  onClick={() => setStep(3)}
+                  style={{
+                    flex: 1,
+                    padding: '14px 32px',
+                    border: 'none',
+                    borderRadius: 8,
+                    background: '#000',
+                    color: 'white',
+                    fontSize: 16,
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                  }}
+                  onMouseEnter={(e) => e.target.style.background = '#333'}
+                  onMouseLeave={(e) => e.target.style.background = '#000'}
+                >
+                  Review →
+                </button>
+              </div>
             </div>
-          </div>
-          <div className="sticky-pricebar">
-            <button onClick={() => setStep(1)}>Back</button>
-            <button onClick={() => setStep(3)} className="btn-primary">Review</button>
           </div>
         </>
       )}
 
       {step === 3 && (
         <>
-          <h2>Summary</h2>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          <h2>Review Configuration</h2>
+          <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr", gap: 24, marginBottom: 32 }}>
             <div>
               {/* Show multiple angles in summary */}
               <div style={{ marginBottom: 16 }}>
-                {previewImages ? (
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-                    {previewImages.front && (
-                      <div>
-                        <img src={previewImages.front} alt="Front view" style={{ width: "100%", borderRadius: 8 }} />
-                        <p style={{ textAlign: 'center', fontSize: 12, color: '#666', margin: '4px 0' }}>Front</p>
-                      </div>
-                    )}
-                    {previewImages.threeQuarter && (
-                      <div>
-                        <img src={previewImages.threeQuarter} alt="3/4 view" style={{ width: "100%", borderRadius: 8 }} />
-                        <p style={{ textAlign: 'center', fontSize: 12, color: '#666', margin: '4px 0' }}>3/4 View</p>
-                      </div>
-                    )}
-                    {previewImages.rear && (
-                      <div>
-                        <img src={previewImages.rear} alt="Rear view" style={{ width: "100%", borderRadius: 8 }} />
-                        <p style={{ textAlign: 'center', fontSize: 12, color: '#666', margin: '4px 0' }}>Rear</p>
-                      </div>
-                    )}
-                    {previewImages.interior && (
-                      <div>
-                        <img src={previewImages.interior} alt="Interior" style={{ width: "100%", borderRadius: 8 }} />
-                        <p style={{ textAlign: 'center', fontSize: 12, color: '#666', margin: '4px 0' }}>Interior</p>
-                      </div>
-                    )}
+                {imagesToUse ? (
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 16 }}>
+                    {angleOptions.map((angle) => (
+                      imagesToUse[angle] && (
+                        <div key={angle}>
+                          <img src={imagesToUse[angle]} alt={`${angle} view`} style={{ width: "100%", borderRadius: 8 }} />
+                          <p style={{ textAlign: 'center', fontSize: 12, color: '#666', margin: '4px 0' }}>{angle === 'threeQuarter' ? '3/4 View' : angle.charAt(0).toUpperCase() + angle.slice(1)}</p>
+                        </div>
+                      )
+                    ))}
                   </div>
                 ) : (
                   <img src={modelImages[model?.name] || TaycanImage} alt={model?.name} style={{ width: "100%", objectFit: "contain" }} />
@@ -244,28 +421,149 @@ function Stepper() {
               </div>
             </div>
             <div>
-              <div style={{ fontWeight: 700, fontSize: 20 }}>{model?.name}</div>
-              <div>Base: ${basePrice.toLocaleString()}</div>
-              <div style={{ marginTop: 12 }}>
-                {Object.entries(selected).map(([cat, items]) => (
-                  <div key={cat} style={{ marginBottom: 8 }}>
-                    <div style={{ fontWeight: 600 }}>{cat}</div>
-                    <ul style={{ margin: 0 }}>
-                      {items.map((i) => (
-                        <li key={i.id}>{i.name} (+${Number(i.price_modifier || 0)})</li>
-                      ))}
-                    </ul>
+              <div style={{ background: 'white', border: '1px solid #e0e0e0', borderRadius: 12, padding: 24 }}>
+                <div style={{ fontWeight: 700, fontSize: 24, marginBottom: 4 }}>{model?.name}</div>
+                <div style={{ fontSize: 14, color: '#666', marginBottom: 20 }}>Base: ${basePrice.toLocaleString()}</div>
+                
+                <div style={{ maxHeight: '50vh', overflowY: 'auto', marginBottom: 20 }}>
+                  {Object.entries(selected).length > 0 ? (
+                    Object.entries(selected).map(([cat, items]) => (
+                      items && (Array.isArray(items) ? items.length > 0 : true) && (
+                        <div key={cat} style={{ marginBottom: 16, paddingBottom: 12, borderBottom: '1px solid #f0f0f0' }}>
+                          <div style={{ fontWeight: 600, fontSize: 13, color: '#333', marginBottom: 8 }}>{cat}</div>
+                          <ul style={{ margin: 0, paddingLeft: 16 }}>
+                            {(Array.isArray(items) ? items : [items]).map((i) => (
+                              <li key={i.id} style={{ fontSize: 12, color: '#666', marginBottom: 4 }}>
+                                {i.name} <span style={{ color: '#999' }}>+${Number(i.price_modifier || 0).toLocaleString()}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )
+                    ))
+                  ) : (
+                    <div style={{ fontSize: 12, color: '#999', fontStyle: 'italic' }}>No additional options selected</div>
+                  )}
+                </div>
+
+                <div style={{ borderTop: '2px solid #000', paddingTop: 16 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: 14, fontWeight: 500 }}>Total Price:</span>
+                    <span style={{ fontSize: 24, fontWeight: 700, color: '#000' }}>${total.toLocaleString()}</span>
                   </div>
-                ))}
+                </div>
               </div>
-              <div style={{ marginTop: 12, fontSize: 18 }}>Total: ${total.toLocaleString()}</div>
             </div>
           </div>
-          <div className="sticky-pricebar">
-            <button onClick={() => setStep(2)}>Back</button>
-            <div style={{ display: "flex", gap: 8 }}>
-              <button onClick={() => exportPdf({ selected, basePrice, total })}>Export PDF</button>
-            </div>
+
+          {/* Styled Review Screen Buttons */}
+          <div style={{ display: 'flex', gap: 20, marginTop: 40, paddingTop: 32, borderTop: '2px solid #e0e0e0', justifyContent: 'space-between' }}>
+            <button 
+              onClick={() => setStep(2)}
+              style={{
+                flex: 1,
+                padding: '18px 36px',
+                border: '2px solid #000',
+                borderRadius: 12,
+                background: 'white',
+                color: '#000',
+                fontSize: 16,
+                fontWeight: 600,
+                cursor: 'pointer',
+                transition: 'all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                letterSpacing: '0.3px',
+                position: 'relative',
+                overflow: 'hidden',
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.background = '#000';
+                e.target.style.color = 'white';
+                e.target.style.transform = 'translateX(-2px)';
+                e.target.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.background = 'white';
+                e.target.style.color = '#000';
+                e.target.style.transform = 'translateX(0)';
+                e.target.style.boxShadow = 'none';
+              }}
+              onMouseDown={(e) => {
+                e.target.style.transform = 'translateX(-2px) scale(0.98)';
+              }}
+              onMouseUp={(e) => {
+                e.target.style.transform = 'translateX(-2px)';
+              }}
+            >
+              ← Back to Options
+            </button>
+            <button 
+              onClick={async (e) => {
+                const btn = e.currentTarget;
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '⏳ Generating...';
+                btn.disabled = true;
+                try {
+                  await exportPdf({ 
+                    model, 
+                    basePrice, 
+                    total, 
+                    selected, 
+                    imagesToUse 
+                  });
+                  btn.innerHTML = '✓ PDF Created!';
+                  setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                  }, 2000);
+                } catch (err) {
+                  console.error('PDF export error:', err);
+                  btn.innerHTML = '❌ Error';
+                  setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                  }, 2000);
+                }
+              }}
+              style={{
+                flex: 1,
+                padding: '18px 36px',
+                border: 'none',
+                borderRadius: 12,
+                background: 'linear-gradient(135deg, #000 0%, #222 100%)',
+                color: 'white',
+                fontSize: 16,
+                fontWeight: 600,
+                cursor: 'pointer',
+                transition: 'all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 10,
+                letterSpacing: '0.3px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                position: 'relative',
+                overflow: 'hidden',
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.transform = 'translateY(-3px)';
+                e.target.style.boxShadow = '0 12px 24px rgba(0,0,0,0.25)';
+                e.target.style.background = 'linear-gradient(135deg, #222 0%, #000 100%)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+                e.target.style.background = 'linear-gradient(135deg, #000 0%, #222 100%)';
+              }}
+              onMouseDown={(e) => {
+                e.target.style.transform = 'translateY(-1px) scale(0.99)';
+              }}
+              onMouseUp={(e) => {
+                e.target.style.transform = 'translateY(-3px)';
+              }}
+            >
+              <span style={{ fontSize: 18 }}>📥</span>
+              Export as PDF
+            </button>
           </div>
         </>
       )}

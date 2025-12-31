@@ -5,21 +5,36 @@ export default function OptionCard({ option, selected, onToggle }) {
   // Rendering rules:
   // - Exterior Color: show IMAGE ONLY (no swatch)
   // - Interior: show SWATCH ONLY (use hex_color)
-  // - Wheels/Technology: show IMAGE (from DB or fallback)
+  // - Wheels/Technology: show IMAGE (prefer API image_url, fallback to local maps)
   const isExteriorColor = option.category === 'Exterior Color';
   const isInteriorColor = option.category === 'Interior';
   
-  // Determine fallback image by category/name
-  let fallbackImage = null;
-  if (option.category === 'Exterior Color') {
-    fallbackImage = colorImageLinks[option.name] || null;
-  } else if (option.category === 'Wheels') {
-    fallbackImage = wheelImageLinks911[option.name] || null;
-  } else if (option.category === 'Technology') {
-    fallbackImage = techImageLinks911[option.name] || null;
+  const isPlaceholderImage =
+    typeof option.image_url === "string" && option.image_url.startsWith("/images/placeholder");
+
+  // Exterior Color: always use the shared color image set (same visuals for all models).
+  // This keeps Taycan paint images consistent with Carrera.
+  let imageToShow = null;
+  if (isExteriorColor) {
+    imageToShow = colorImageLinks[option.name] || (!isPlaceholderImage ? (option.image_url || null) : null);
+  } else {
+    // Other categories: prefer backend-provided image_url when it's a real URL.
+    // If backend returns a placeholder, fall back to local maps.
+    imageToShow = !isPlaceholderImage ? (option.image_url || null) : null;
+
+    if (!imageToShow) {
+      if (option.category === 'Wheels') {
+        imageToShow = wheelImageLinks911[option.name] || null;
+      } else if (option.category === 'Technology') {
+        imageToShow = techImageLinks911[option.name] || null;
+      }
+    }
   }
 
-  const imageToShow = option.image_url || fallbackImage || null;
+  // If we still don't have anything, use whatever the backend provided (placeholder).
+  if (!imageToShow && option.image_url) {
+    imageToShow = option.image_url;
+  }
   const hex = option.hex_color || interiorHexColors[option.name] || "#ddd";
 
   return (
@@ -63,7 +78,15 @@ export default function OptionCard({ option, selected, onToggle }) {
       )}
       <div style={{ fontWeight: 700 }}>{option.name}</div>
       <div style={{ fontSize: 12, color: "#555" }}>{option.description}</div>
-      <div style={{ marginTop: 6 }}>+${Number(option.price_modifier || 0)}</div>
+      <div style={{ 
+        marginTop: 8, 
+        fontSize: 16, 
+        fontWeight: 600, 
+        color: '#000',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+      }}>
+        +${Number(option.price_modifier || 0).toLocaleString()}
+      </div>
     </button>
   );
 }

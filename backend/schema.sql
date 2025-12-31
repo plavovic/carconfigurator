@@ -2,6 +2,19 @@
 -- Created for Porsche Car Configurator Application
 
 -- =====================================================
+-- DROP EXISTING TABLES (if they exist)
+-- =====================================================
+DROP TABLE IF EXISTS configuration_items CASCADE;
+DROP TABLE IF EXISTS configurations CASCADE;
+DROP TABLE IF EXISTS reviews CASCADE;
+DROP TABLE IF EXISTS orders CASCADE;
+DROP TABLE IF EXISTS car_model_options CASCADE;
+DROP TABLE IF EXISTS options CASCADE;
+DROP TABLE IF EXISTS car_models CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS services CASCADE;
+
+-- =====================================================
 -- USERS TABLE
 -- =====================================================
 CREATE TABLE users (
@@ -171,7 +184,7 @@ VALUES
   ('Exterior Color', 'Miami Blue', 'Vibrant blue finish', 4000.00, 'C3E', '#00B0F0'),
   ('Exterior Color', 'Racing Yellow', 'Bright yellow finish', 3500.00, 'C16', '#FFD700');
 
--- Insert Options - Wheels
+-- Insert Options - Wheels (Carrera wheels)
 INSERT INTO options (category, name, description, price_modifier, option_code)
 VALUES
   ('Wheels', '19" Standard', 'OEM 19 inch wheels', 0.00, 'W19S'),
@@ -179,21 +192,37 @@ VALUES
   ('Wheels', '21" Carrera S', '21 inch performance wheels', 2500.00, 'W21S'),
   ('Wheels', '22" Turbo', '22 inch sport wheels', 3500.00, 'W22T');
 
+-- Insert Options - Wheels (Taycan exclusive wheels)
+INSERT INTO options (category, name, description, price_modifier, option_code)
+VALUES
+  ('Wheels', '19" Standard (Taycan)', 'Taycan 19 inch standard wheels', 0.00, 'TY19S'),
+  ('Wheels', '20" Turbo Sport (Taycan)', 'Taycan 20 inch turbo sport wheels', 1500.00, 'TY20T'),
+  ('Wheels', '21" Mission E (Taycan)', 'Taycan 21 inch mission e wheels', 2500.00, 'TY21M');
+
 -- Insert Options - Interior
 INSERT INTO options (category, name, description, price_modifier, option_code)
 VALUES
   ('Interior', 'Black Leather', 'Premium black leather upholstery', 0.00, 'INTB'),
   ('Interior', 'Bordeaux Leather', 'Burgundy leather upholstery', 2000.00, 'INTR'),
   ('Interior', 'Cognac Leather', 'Brown leather upholstery', 2000.00, 'INTC'),
-  ('Interior', 'Alcantara Trim', 'Alcantara steering wheel and trim', 3000.00, 'INTA');
+  ('Interior', 'Beige Leather', 'Elegant beige leather upholstery', 1800.00, 'INTBE');
 
 -- Insert Options - Technology
 INSERT INTO options (category, name, description, price_modifier, option_code)
 VALUES
   ('Technology', 'Premium Sound System', 'Bose premium audio', 1500.00, 'T01'),
-  ('Technology', 'Panoramic Sunroof', 'Large panoramic glass roof', 2000.00, 'T02'),
+  ('Technology', 'Electric slide/tilt sunroof', 'Outwards-opening electric slide/tilt steel sunroof', 2000.00, 'T02'),
   ('Technology', 'Adaptive Air Suspension', 'Air suspension system', 2500.00, 'T03'),
-  ('Technology', 'Night Vision', 'Infrared night vision assist', 3500.00, 'T04');
+  ('Technology', 'Night Vision Assist (Carrera)', 'Infrared night vision assist', 3500.00, 'M9R1_CAR'),
+  ('Technology', 'HD Matrix LED Headlights (Carrera)', 'The high-resolution HD-Matrix LED headlights', 2800.00, 'M8IU_CAR');
+
+-- Insert Options - Taycan exclusive accessories
+INSERT INTO options (category, name, description, price_modifier, option_code)
+VALUES
+  ('Technology', 'Rear-axle steering', 'Advanced rear-axle steering system', 3500.00, 'TY_RAS'),
+  ('Technology', 'Porsche Electric Sport Sound', 'Porsche Electric Sport Sound system', 1200.00, 'TY_PESS'),
+  ('Technology', 'Night Vision Assist (Taycan)', 'Advanced night vision assist system for Taycan', 2500.00, 'M9R1_TY'),
+  ('Technology', 'HD Matrix LED Headlights (Taycan)', 'The high-resolution HD-Matrix LED headlights for Taycan', 2800.00, 'M8IU_TY');
 
 -- Insert Services
 INSERT INTO services (name, description, price, image_url)
