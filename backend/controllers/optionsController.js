@@ -1,6 +1,8 @@
 const pool = require("../db");
 const { generateOptionImage, getPlaceholderImage } = require("../services/imageService");
 const taycanImageMap = require("../config/taycanImages");
+const macanImageMap = require("../config/macanImages");
+const cayenneImageMap = require("../config/cayenneImages");
 const modelOptionImages = require("../config/modelOptionImages");
 
 const getOptions = async(req, res) => {
@@ -61,8 +63,20 @@ const getOptions = async(req, res) => {
             const modelName = option.car_model_name;
             
             // 1) Exact Taycan map (wheels + Taycan-only names)
-            if (taycanImageMap[option.name]) {
+            // Important: some option names are shared across models (e.g. Porsche Electric Sport Sound),
+            // so only apply this map when the requested model is Taycan.
+            if (modelName === 'Taycan' && taycanImageMap[option.name]) {
                 imageUrl = taycanImageMap[option.name];
+            }
+
+            // 1b) Macan wheels (and any other Macan-specific exact mappings)
+            if (!imageUrl && modelName === 'Macan') {
+                imageUrl = macanImageMap[option.name] || macanImageMap[baseName] || null;
+            }
+
+            // 1c) Cayenne wheels (exclusive wheel option-card images)
+            if (!imageUrl && modelName === 'Cayenne') {
+                imageUrl = cayenneImageMap[option.name] || cayenneImageMap[baseName] || null;
             }
 
             // 2) Model-specific overrides for shared options (e.g., HD Matrix / Night Vision)

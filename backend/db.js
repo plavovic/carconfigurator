@@ -1,12 +1,14 @@
-
-
 const { Pool } = require('pg');
-require('dotenv').config();
+const path = require('path');
+
+// Always load the backend/.env file, even if node is run from the repo root.
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 
 // Create a connection pool
 const pool = new Pool({
   user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
+  // pg's SCRAM auth expects a string; dotenv may be missing if loaded from wrong cwd.
+  password: process.env.DB_PASSWORD != null ? String(process.env.DB_PASSWORD) : undefined,
   host: process.env.DB_HOST,
   port: Number(process.env.DB_PORT) || 5432,
   database: process.env.DB_NAME,
