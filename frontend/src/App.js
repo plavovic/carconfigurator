@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 
 
 
+
 import Taycan from "./pages/models/Taycan.jsx"; 
 //import HomePage from "./pages/HomePage.jsx";
 //import TestApi from "./pages/TestApi.jsx"; //page for testing apis
@@ -10,10 +11,27 @@ import Taycan from "./pages/models/Taycan.jsx";
 
 //bug in imports, pages should be imported one by one
 
+import TestApi from "./pages/TestApi.jsx";
+import HomePage from "./pages/HomePage.jsx";
+import Configurator from "./pages/Configurator.jsx";
+import Licenses from "./pages/Licenses.jsx";
+import Login from "./pages/Login.jsx";
+import Services from "./pages/Services.jsx";
+
+
 function App() {
   return (
     <Routes>
+
       <Route path ="/" element={<Taycan />} />
+=======
+      <Route path="/" element={<HomePage />} />
+      <Route path="/test" element={<TestApi />} />
+      <Route path="/configurator" element={<Configurator />} />
+      <Route path="/licenses" element={<Licenses />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/services" element={<Services />} />
+
     </Routes>
   );
 }

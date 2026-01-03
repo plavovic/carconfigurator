@@ -14,7 +14,7 @@ export default function ChatWidget() {
     if (open && messages.length === 0) {
       setMessages([{ role: "bot", text: "Hello, how can I help you?" }]);
     }
-  }, [open]); // intentionally not including messages to avoid repeated greeting
+  }, [open, messages.length]);
 
   // Auto-scroll on new messages
   useEffect(() => {

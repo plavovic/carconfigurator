@@ -2,6 +2,19 @@
 -- Created for Porsche Car Configurator Application
 
 -- =====================================================
+-- DROP EXISTING TABLES (if they exist)
+-- =====================================================
+DROP TABLE IF EXISTS configuration_items CASCADE;
+DROP TABLE IF EXISTS configurations CASCADE;
+DROP TABLE IF EXISTS reviews CASCADE;
+DROP TABLE IF EXISTS orders CASCADE;
+DROP TABLE IF EXISTS car_model_options CASCADE;
+DROP TABLE IF EXISTS options CASCADE;
+DROP TABLE IF EXISTS car_models CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS services CASCADE;
+
+-- =====================================================
 -- USERS TABLE
 -- =====================================================
 CREATE TABLE users (
@@ -26,8 +39,8 @@ CREATE TABLE car_models (
   name VARCHAR(100) NOT NULL UNIQUE,
   description TEXT,
   base_price DECIMAL(10, 2) NOT NULL,
-  image_url VARCHAR(255),
-  front_image_url VARCHAR(255),
+  model_code VARCHAR(50), -- Porsche model code for image API
+  config_code TEXT, -- Configuration code (can exceed 255 chars) for Porsche image API
   zero_to_hundred_km_h DECIMAL(3, 1),
   top_speed_km_h INTEGER,
   power_hp INTEGER,
@@ -49,7 +62,8 @@ CREATE TABLE options (
   name VARCHAR(100) NOT NULL,
   description TEXT,
   price_modifier DECIMAL(10, 2) DEFAULT 0,
-  image_url VARCHAR(255),
+  option_code VARCHAR(50), -- Porsche option code for image API
+  hex_color VARCHAR(7), -- Color hex code for paint colors
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   UNIQUE(category, name)
@@ -154,45 +168,61 @@ CREATE TABLE services (
 -- =====================================================
 
 -- Insert Car Models
-INSERT INTO car_models (name, description, base_price, image_url, front_image_url, zero_to_hundred_km_h, top_speed_km_h, power_hp, power_kw, energy_consumption_kWh_per_100km, co2_emissions_g_per_km)
+INSERT INTO car_models (name, description, base_price, model_code, config_code, zero_to_hundred_km_h, top_speed_km_h, power_hp, power_kw, energy_consumption_kWh_per_100km, co2_emissions_g_per_km)
 VALUES
-  ('Taycan', 'Porsche Taycan is an all-electric sports sedan', 103000.00, '/images/porschetaycan.png', '/images/porschetaycanf.png', 3.1, 260, 616, 459, 19.1, 0),
-  ('911', 'Iconic Porsche sports car', 95000.00, NULL, NULL, 3.2, 320, 580, 430, NULL, NULL),
-  ('Cayenne', 'Luxury sport utility vehicle', 85000.00, NULL, NULL, 3.6, 280, 550, 410, NULL, NULL),
-  ('Macan', 'Compact luxury crossover SUV', 65000.00, NULL, NULL, 5.2, 245, 340, 252, NULL, NULL);
+  ('Taycan', 'Porsche Taycan is an all-electric sports sedan', 103000.00, 'Y1AEN1', 'N4Igxg9gdgZglgcxALlAQynAtmgLnaAZxQG0BdAGnDSwFMAnNFUOAExRFoA9cBaAGwgB3XjHrQ+-WjFwgqEAA74izEADc09OBlnIQrWoQDWuRSAC+5qrShq44qHSi6W7PQHk0hOMXlKCUMSollT8iAAW+FBIqCBsHAAiAIIAmnIgisqBzCEgCuKsAK5gLnFuIACcFQBMAIwAQtXpmQFBoJCFzvQAngDCEAYcAOpD6VgDtPwptJoo1QAM1QBsfllBJCC1ACoAzOk79XtUAKwV9elLAJJHIADsSQDS6bcA4hXpFQBaAKLp3wCyTSoL1qADF0pchjcAFLfG4AGReWwSACV4el3LV0gAFAAS6QAisckoSUe8qASAGo3ACq2PJIEp8KaZEsVhAhFouCiCDaIBgEHoOF0IAAVgpaEgqLhGIEFJobLoYGh+JzLEA', 3.1, 260, 616, 459, 19.1, 0),
+  ('911', 'Iconic Porsche sports car', 95000.00, '992', NULL, 3.2, 320, 580, 430, NULL, NULL),
+  ('Cayenne', 'Luxury sport utility vehicle', 85000.00, 'E3', NULL, 3.6, 280, 550, 410, NULL, NULL),
+  ('Macan', 'Compact luxury crossover SUV', 65000.00, '95B', NULL, 5.2, 245, 340, 252, NULL, NULL);
 
 -- Insert Options - Exterior Colors
-INSERT INTO options (category, name, description, price_modifier, image_url)
+INSERT INTO options (category, name, description, price_modifier, option_code, hex_color)
 VALUES
-  ('Exterior Color', 'Jet Black', 'Classic black finish', 0.00, NULL),
-  ('Exterior Color', 'Alpine White', 'Pure white finish', 2500.00, NULL),
-  ('Exterior Color', 'Agate Grey', 'Sophisticated grey', 3000.00, NULL),
-  ('Exterior Color', 'Miami Blue', 'Vibrant blue finish', 4000.00, NULL),
-  ('Exterior Color', 'Racing Yellow', 'Bright yellow finish', 3500.00, NULL);
+  ('Exterior Color', 'Jet Black', 'Classic black finish', 0.00, 'C9X', '#000000'),
+  ('Exterior Color', 'Alpine White', 'Pure white finish', 2500.00, 'C9A', '#FFFFFF'),
+  ('Exterior Color', 'Agate Grey', 'Sophisticated grey', 3000.00, 'C9Y', '#505559'),
+  ('Exterior Color', 'Miami Blue', 'Vibrant blue finish', 4000.00, 'C3E', '#00B0F0'),
+  ('Exterior Color', 'Racing Yellow', 'Bright yellow finish', 3500.00, 'C16', '#FFD700');
 
--- Insert Options - Wheels
-INSERT INTO options (category, name, description, price_modifier, image_url)
+-- Insert Options - Wheels (Carrera wheels)
+INSERT INTO options (category, name, description, price_modifier, option_code)
 VALUES
-  ('Wheels', '19" Standard', 'OEM 19 inch wheels', 0.00, NULL),
-  ('Wheels', '20" Carrera Classic', '20 inch alloy wheels', 1500.00, NULL),
-  ('Wheels', '21" Carrera S', '21 inch performance wheels', 2500.00, NULL),
-  ('Wheels', '22" Turbo', '22 inch sport wheels', 3500.00, NULL);
+  ('Wheels', '19" Standard', 'OEM 19 inch wheels', 0.00, 'W19S'),
+  ('Wheels', '20" Carrera Classic', '20 inch alloy wheels', 1500.00, 'W20C'),
+  ('Wheels', '21" Carrera S', '21 inch performance wheels', 2500.00, 'W21S'),
+  ('Wheels', '22" Turbo', '22 inch sport wheels', 3500.00, 'W22T');
+
+-- Insert Options - Wheels (Taycan exclusive wheels)
+INSERT INTO options (category, name, description, price_modifier, option_code)
+VALUES
+  ('Wheels', '19" Standard (Taycan)', 'Taycan 19 inch standard wheels', 0.00, 'TY19S'),
+  ('Wheels', '20" Turbo Sport (Taycan)', 'Taycan 20 inch turbo sport wheels', 1500.00, 'TY20T'),
+  ('Wheels', '21" Mission E (Taycan)', 'Taycan 21 inch mission e wheels', 2500.00, 'TY21M');
 
 -- Insert Options - Interior
-INSERT INTO options (category, name, description, price_modifier, image_url)
+INSERT INTO options (category, name, description, price_modifier, option_code)
 VALUES
-  ('Interior', 'Black Leather', 'Premium black leather upholstery', 0.00, NULL),
-  ('Interior', 'Bordeaux Leather', 'Burgundy leather upholstery', 2000.00, NULL),
-  ('Interior', 'Cognac Leather', 'Brown leather upholstery', 2000.00, NULL),
-  ('Interior', 'Alcantara Trim', 'Alcantara steering wheel and trim', 3000.00, NULL);
+  ('Interior', 'Black Leather', 'Premium black leather upholstery', 0.00, 'INTB'),
+  ('Interior', 'Bordeaux Leather', 'Burgundy leather upholstery', 2000.00, 'INTR'),
+  ('Interior', 'Cognac Leather', 'Brown leather upholstery', 2000.00, 'INTC'),
+  ('Interior', 'Beige Leather', 'Elegant beige leather upholstery', 1800.00, 'INTBE');
 
 -- Insert Options - Technology
-INSERT INTO options (category, name, description, price_modifier, image_url)
+INSERT INTO options (category, name, description, price_modifier, option_code)
 VALUES
-  ('Technology', 'Premium Sound System', 'Bose premium audio', 1500.00, NULL),
-  ('Technology', 'Panoramic Sunroof', 'Large panoramic glass roof', 2000.00, NULL),
-  ('Technology', 'Adaptive Air Suspension', 'Air suspension system', 2500.00, NULL),
-  ('Technology', 'Night Vision', 'Infrared night vision assist', 3500.00, NULL);
+  ('Technology', 'Premium Sound System', 'Bose premium audio', 1500.00, 'T01'),
+  ('Technology', 'Electric slide/tilt sunroof', 'Outwards-opening electric slide/tilt steel sunroof', 2000.00, 'T02'),
+  ('Technology', 'Adaptive Air Suspension', 'Air suspension system', 2500.00, 'T03'),
+  ('Technology', 'Night Vision Assist (Carrera)', 'Infrared night vision assist', 3500.00, 'M9R1_CAR'),
+  ('Technology', 'HD Matrix LED Headlights (Carrera)', 'The high-resolution HD-Matrix LED headlights', 2800.00, 'M8IU_CAR');
+
+-- Insert Options - Taycan exclusive accessories
+INSERT INTO options (category, name, description, price_modifier, option_code)
+VALUES
+  ('Technology', 'Rear-axle steering', 'Advanced rear-axle steering system', 3500.00, 'TY_RAS'),
+  ('Technology', 'Porsche Electric Sport Sound', 'Porsche Electric Sport Sound system', 1200.00, 'TY_PESS'),
+  ('Technology', 'Night Vision Assist (Taycan)', 'Advanced night vision assist system for Taycan', 2500.00, 'M9R1_TY'),
+  ('Technology', 'HD Matrix LED Headlights (Taycan)', 'The high-resolution HD-Matrix LED headlights for Taycan', 2800.00, 'M8IU_TY');
 
 -- Insert Services
 INSERT INTO services (name, description, price, image_url)

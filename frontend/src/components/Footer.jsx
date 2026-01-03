@@ -1,4 +1,3 @@
-import react from 'react';
 import './Footer.css'; 
 import LicenseText from './LicenseText';
 
@@ -30,11 +29,11 @@ function Footer() {
         <div className="contacts">
         <div className="call">
             <Call className="icon"></Call>
-            <a>+387 60 000 000</a>
+            <a href="tel:+38760000000">+387 60 000 000</a>
         </div>
         <div className="mail">
             <Mail className="icon"></Mail>
-            <a>info@carconfigurator.com</a>
+            <a href="mailto:info@carconfigurator.com">info@carconfigurator.com</a>
         </div>
         </div>
 
@@ -50,9 +49,9 @@ function Footer() {
         </div>
 
         <div className="further-links">
-            <a>Electric Vehicles</a>
-            <a>Licenses</a>
-            <a>Services</a>
+            <a href="/">Electric Vehicles</a>
+            <a href="/licenses">Licenses</a>
+            <a href="/services">Services</a>
         </div>
         <div className="underline"></div>
         <div className="license">
