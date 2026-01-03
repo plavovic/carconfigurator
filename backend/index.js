@@ -14,6 +14,7 @@ const chatbotRoute = require('./routes/chatbot');
 const modelsRoute = require('./routes/models');
 const configurationsRoute = require('./routes/configurations');
 const imageProxyRoute = require('./routes/imageProxy');
+const inventoryRoute = require('./routes/inventory');
 
 app.get("/", (req, res) => {    //test performed -- simple server check
   res.send("Backend is running ✅");
@@ -39,6 +40,8 @@ app.use("/api/categories", categoriesRoute);
 app.use("/api/models", modelsRoute);
 
 app.use("/api/configurations", configurationsRoute);
+
+app.use("/api/inventory", inventoryRoute);
 
 // Same-origin proxy for remote (Porsche) images used by PDF export.
 app.use('/api', imageProxyRoute);
