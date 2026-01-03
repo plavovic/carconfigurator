@@ -36,6 +36,8 @@ function Stepper() {
   const [error, setError] = useState("");
   const [previewImages, setPreviewImages] = useState(null);
   const [currentImageAngle, setCurrentImageAngle] = useState('threeQuarter'); // available angles defined in angleOptions
+  const [availableInventory, setAvailableInventory] = useState([]);
+  const [inventoryError, setInventoryError] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -325,6 +327,34 @@ function Stepper() {
     setSelected({});
   }, [model, setSelected]);
 
+  // Load available inventory for the selected model on the review step.
+  useEffect(() => {
+    if (!model || step !== 3) {
+      setAvailableInventory([]);
+      setInventoryError("");
+      return;
+    }
+
+    (async () => {
+      try {
+        setInventoryError("");
+        const selectedOptionIds = Object.values(selected)
+          .flat()
+          .map((opt) => opt.id);
+
+        const inv = await http.post('/api/inventory/available', {
+          carModelId: model.id,
+          selectedOptionIds,
+        });
+
+        setAvailableInventory(Array.isArray(inv) ? inv : []);
+      } catch (e) {
+        setAvailableInventory([]);
+        setInventoryError(e.message || 'Failed to load available cars');
+      }
+    })();
+  }, [model, step, selected]);
+
   return (
     <div className="configurator-page">
       <header>
@@ -608,6 +638,63 @@ function Stepper() {
                     <span style={{ fontSize: 24, fontWeight: 700, color: '#000' }}>${total.toLocaleString()}</span>
                   </div>
                 </div>
+              </div>
+
+              {/* Available cars for this model */}
+              <div style={{ background: 'white', border: '1px solid #e0e0e0', borderRadius: 12, padding: 18, marginTop: 16 }}>
+                <div style={{ fontWeight: 700, fontSize: 16, marginBottom: 10 }}>
+                  Available {model?.name || 'cars'}
+                </div>
+                {inventoryError ? (
+                  <div style={{ fontSize: 12, color: 'red' }}>{inventoryError}</div>
+                ) : availableInventory.length ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    {availableInventory.map((unit) => (
+                      <div
+                        key={unit.id}
+                        style={{
+                          border: '1px solid #f0f0f0',
+                          borderRadius: 10,
+                          padding: 12,
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          gap: 10,
+                        }}
+                      >
+                        <div style={{ minWidth: 0 }}>
+                          <div style={{ fontSize: 13, fontWeight: 600, color: '#222', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                            {unit.label || `Unit #${unit.id}`}
+                          </div>
+                          <div style={{ fontSize: 12, color: '#666' }}>
+                            {(unit.dealership_name || 'Dealership')} • {(unit.status || 'available')}
+                          </div>
+                        </div>
+
+                        {unit.exactMatch ? (
+                          <div
+                            style={{
+                              fontSize: 11,
+                              fontWeight: 700,
+                              border: '1px solid #000',
+                              borderRadius: 999,
+                              padding: '6px 10px',
+                              color: '#000',
+                              background: '#fff',
+                              whiteSpace: 'nowrap',
+                            }}
+                          >
+                            EXACT MATCH
+                          </div>
+                        ) : null}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div style={{ fontSize: 12, color: '#999', fontStyle: 'italic' }}>
+                    No available cars found for this model.
+                  </div>
+                )}
               </div>
             </div>
           </div>

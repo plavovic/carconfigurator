@@ -4,8 +4,6 @@ import { useState } from "react";
 import user_icon from "../assets/user.svg";
 import email_icon from "../assets/email.svg";
 import password_icon from "../assets/password.svg";
-
-import background from "../images/loginbackground.jpg";
 import "./Login.css";
 
 

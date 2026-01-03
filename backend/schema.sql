@@ -6,6 +6,8 @@
 -- =====================================================
 DROP TABLE IF EXISTS configuration_items CASCADE;
 DROP TABLE IF EXISTS configurations CASCADE;
+DROP TABLE IF EXISTS inventory_unit_options CASCADE;
+DROP TABLE IF EXISTS inventory_units CASCADE;
 DROP TABLE IF EXISTS reviews CASCADE;
 DROP TABLE IF EXISTS orders CASCADE;
 DROP TABLE IF EXISTS car_model_options CASCADE;
@@ -115,6 +117,31 @@ CREATE TABLE configuration_items (
 
 CREATE INDEX idx_configuration_items_configuration_id ON configuration_items(configuration_id);
 CREATE INDEX idx_configuration_items_option_id ON configuration_items(option_id);
+
+-- =====================================================
+-- INVENTORY (Dealership stock units)
+-- =====================================================
+CREATE TABLE inventory_units (
+  id SERIAL PRIMARY KEY,
+  car_model_id INTEGER NOT NULL REFERENCES car_models(id) ON DELETE CASCADE,
+  dealership_name VARCHAR(150),
+  label VARCHAR(255),
+  status VARCHAR(50) DEFAULT 'available',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_inventory_units_car_model_id ON inventory_units(car_model_id);
+CREATE INDEX idx_inventory_units_status ON inventory_units(status);
+
+CREATE TABLE inventory_unit_options (
+  id SERIAL PRIMARY KEY,
+  inventory_unit_id INTEGER NOT NULL REFERENCES inventory_units(id) ON DELETE CASCADE,
+  option_id INTEGER NOT NULL REFERENCES options(id) ON DELETE CASCADE,
+  UNIQUE(inventory_unit_id, option_id)
+);
+
+CREATE INDEX idx_inventory_unit_options_inventory_unit_id ON inventory_unit_options(inventory_unit_id);
+CREATE INDEX idx_inventory_unit_options_option_id ON inventory_unit_options(option_id);
 
 -- =====================================================
 -- ORDERS TABLE
