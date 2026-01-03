@@ -39,6 +39,33 @@ const seedRelations = async () => {
             '22" Turbo'
         ];
 
+        const macanExclusiveWheels = [
+            '20" Standard',
+            '21" Offroad Style',
+            '22" RS Spyder'
+        ];
+
+        const macanExclusiveAccessories = [
+            'Led HD Matrix Headlights',
+            'Power Steering Plus',
+            'Porsche Electric Sport Sound',
+            'Bose Surround Premium System',
+            'Rear-Axle Steering'
+        ];
+
+        const cayenneExclusiveWheels = [
+            '20" Standard',
+            '21" Exclusive',
+            '22" Sport Design'
+        ];
+
+        const cayenneExclusiveAccessories = [
+            'LED HD Matrix Headlights',
+            'Rear Axle Steering',
+            'InnoDrive including Active Lane Keeping',
+            'Night Vision Assist'
+        ];
+
         const nonTaycanExcluded = [
             'Adaptive Air Suspension'
         ];
@@ -60,24 +87,57 @@ const seedRelations = async () => {
                         shouldAdd = true;
                     } else if (taycanExclusiveAccessories.includes(option.name)) {
                         shouldAdd = true;
+                    } else if (macanExclusiveWheels.includes(option.name)) {
+                        shouldAdd = false;
                     } else if (option.category === 'Exterior Color') {
                         shouldAdd = true;
                     } else if (option.category === 'Interior') {
                         shouldAdd = true;
                     }
-                } else {
-                    // Other models (911, Cayenne, Macan) get:
-                    // - Carrera wheels
+                } else if (model.name === 'Macan') {
+                    // Macan ONLY gets:
+                    // - Macan wheels
                     // - Colors and interior
-                    // - Standard technology options
-                    // NO Taycan exclusive items
-                    
-                    // Exclude all Taycan-specific items
-                    if (taycanExclusiveWheels.includes(option.name) || 
-                        taycanExclusiveAccessories.includes(option.name)) {
+                    // - Macan-exclusive Technology options
+
+                    if (macanExclusiveWheels.includes(option.name)) {
+                        shouldAdd = true;
+                    } else if (option.category === 'Wheels') {
+                        shouldAdd = false;
+                    } else if (taycanExclusiveWheels.includes(option.name)) {
+                        shouldAdd = false;
+                    } else if (taycanExclusiveAccessories.includes(option.name) && !macanExclusiveAccessories.includes(option.name)) {
+                        // Exclude Taycan-only accessories (but allow shared names like Porsche Electric Sport Sound)
                         shouldAdd = false;
                     } else if (nonTaycanExcluded.includes(option.name)) {
                         shouldAdd = false;
+                    } else if (option.category === 'Technology') {
+                        shouldAdd = macanExclusiveAccessories.includes(option.name);
+                    } else if (option.category === 'Exterior Color' || option.category === 'Interior') {
+                        shouldAdd = true;
+                    }
+                } else {
+                    // Other models (e.g. 911, Cayenne) get model-specific wheels.
+                    // NO Taycan or Macan exclusive items.
+                    
+                    // Exclude all Taycan-specific items
+                    if (taycanExclusiveWheels.includes(option.name) ||
+                        taycanExclusiveAccessories.includes(option.name) ||
+                        macanExclusiveWheels.includes(option.name) ||
+                        macanExclusiveAccessories.includes(option.name) ||
+                        ((model.name !== 'Cayenne') && (cayenneExclusiveWheels.includes(option.name) || cayenneExclusiveAccessories.includes(option.name)))) {
+                        shouldAdd = false;
+                    }
+                    else if (nonTaycanExcluded.includes(option.name)) {
+                        shouldAdd = false;
+                    } else if (option.category === 'Wheels') {
+                        if (model.name === 'Cayenne') {
+                            shouldAdd = cayenneExclusiveWheels.includes(option.name);
+                        } else {
+                            shouldAdd = carreraExclusiveWheels.includes(option.name);
+                        }
+                    } else if (model.name === 'Cayenne' && option.category === 'Technology') {
+                        shouldAdd = cayenneExclusiveAccessories.includes(option.name);
                     } else {
                         shouldAdd = true;
                     }

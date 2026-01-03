@@ -8,7 +8,10 @@ import OptionCard from "../components/OptionCard";
 import exportPdf from "../components/exportPdf";
 import NavBar from "../components/NavBar";
 import carreraImageMatrix from "../data/carreraImageMatrix.json";
-import { interiorImageLinks } from "../api/imageLinks";
+import taycanImageMatrix from "../data/taycanImageMatrix.json";
+import macanImageMatrix from "../data/macanImageMatrix.json";
+import cayenneImageMatrix from "../data/cayenneImageMatrix.json";
+import { interiorImageLinks, taycanInteriorImageLinks, macanInteriorImageLinks, cayenneInteriorImageLinks } from "../api/imageLinks";
 
 import TaycanImage from "../images/porschetaycan.png";
 import NineElevenImage from "../images/porsche911.png";
@@ -49,13 +52,22 @@ function Stepper() {
         ]);
       }
       try {
-        const o = await http.get(model ? `/api/options?modelId=${model.id}` : "/api/options");
+        if (!model) {
+          setOptions([]);
+          setError("");
+          return;
+        }
+        const o = await http.get(`/api/options?modelId=${model.id}`);
         setOptions(o);
       } catch (e) {
         setError(e.message);
       }
     })();
   }, [model]);
+
+  useEffect(() => {
+    if (!model && step !== 1) setStep(1);
+  }, [model, step]);
 
   // Update preview images when selections change
   useEffect(() => {
@@ -111,6 +123,80 @@ function Stepper() {
     });
   }, [model, options, setSelected]);
 
+  // Ensure a default Interior is selected for ALL models (Black Leather)
+  useEffect(() => {
+    if (!model || !options.length) return;
+
+    const blackLeather = options.find(
+      (o) => o.category === 'Interior' && o.name.toLowerCase().includes('black')
+    );
+
+    if (!blackLeather) return;
+
+    setSelected((prev) => {
+      // Don't override an existing interior choice
+      if (prev['Interior']?.length) return prev;
+      return { ...prev, Interior: [blackLeather] };
+    });
+  }, [model, options, setSelected]);
+
+  // Ensure a default Taycan baseline is selected (Jet Black + 19" Standard) so preview has an image immediately
+  useEffect(() => {
+    if (!model || !options.length) return;
+    const isTaycan = (model.name || '') === 'Taycan';
+    if (!isTaycan) return;
+
+    const jetBlack = options.find((o) => o.category === 'Exterior Color' && o.name.toLowerCase().includes('black'));
+    const nineteenStd = options.find((o) => o.category === 'Wheels' && o.name.includes('19" Standard'));
+
+    if (!jetBlack && !nineteenStd) return;
+
+    setSelected((prev) => {
+      const next = { ...prev };
+      if (jetBlack && !(next['Exterior Color']?.length)) next['Exterior Color'] = [jetBlack];
+      if (nineteenStd && !(next['Wheels']?.length)) next['Wheels'] = [nineteenStd];
+      return next;
+    });
+  }, [model, options, setSelected]);
+
+  // Ensure a default Macan baseline is selected (Jet Black + 20" Standard) so preview has an image immediately
+  useEffect(() => {
+    if (!model || !options.length) return;
+    const isMacan = (model.name || '') === 'Macan';
+    if (!isMacan) return;
+
+    const jetBlack = options.find((o) => o.category === 'Exterior Color' && o.name.toLowerCase().includes('black'));
+    const twentyStd = options.find((o) => o.category === 'Wheels' && o.name.includes('20" Standard'));
+
+    if (!jetBlack && !twentyStd) return;
+
+    setSelected((prev) => {
+      const next = { ...prev };
+      if (jetBlack && !(next['Exterior Color']?.length)) next['Exterior Color'] = [jetBlack];
+      if (twentyStd && !(next['Wheels']?.length)) next['Wheels'] = [twentyStd];
+      return next;
+    });
+  }, [model, options, setSelected]);
+
+  // Ensure a default Cayenne baseline is selected (Jet Black + 20" Standard) so preview has an image immediately
+  useEffect(() => {
+    if (!model || !options.length) return;
+    const isCayenne = (model.name || '') === 'Cayenne';
+    if (!isCayenne) return;
+
+    const jetBlack = options.find((o) => o.category === 'Exterior Color' && o.name.toLowerCase().includes('black'));
+    const twentyStd = options.find((o) => o.category === 'Wheels' && o.name.includes('20" Standard'));
+
+    if (!jetBlack && !twentyStd) return;
+
+    setSelected((prev) => {
+      const next = { ...prev };
+      if (jetBlack && !(next['Exterior Color']?.length)) next['Exterior Color'] = [jetBlack];
+      if (twentyStd && !(next['Wheels']?.length)) next['Wheels'] = [twentyStd];
+      return next;
+    });
+  }, [model, options, setSelected]);
+
   const selectedColor = selected['Exterior Color']?.[0]?.name;
   const selectedWheel = selected['Wheels']?.[0]?.name;
   const selectedInterior = selected['Interior']?.[0]?.name;
@@ -128,13 +214,74 @@ function Stepper() {
 
   const wheelKey = useMemo(() => {
     if (!selectedWheel) return null;
+    const modelName = model?.name || '';
+    if (modelName === 'Taycan') {
+      const lc = selectedWheel.toLowerCase();
+      if (lc.includes('19')) return '19" Standard';
+      if (lc.includes('20')) return '20" Turbo Sport';
+      if (lc.includes('21')) return '21" Mission E';
+      return null;
+    }
+    if (modelName === 'Macan') {
+      const lc = selectedWheel.toLowerCase();
+      if (lc.includes('20')) return '20" Standard';
+      if (lc.includes('21')) return '21" Offroad Style';
+      if (lc.includes('22')) return '22" RS Spyder';
+      return null;
+    }
+    if (modelName === 'Cayenne') {
+      const lc = selectedWheel.toLowerCase();
+      if (lc.includes('20')) return '20" Standard';
+      if (lc.includes('21')) return '21" Exclusive';
+      if (lc.includes('22')) return '22" Sport Design';
+      return null;
+    }
     const lc = selectedWheel.toLowerCase();
     if (lc.includes('19')) return '19" Standard';
     if (lc.includes('20') || lc.includes('classic')) return '20" Carrera Classic';
     if (lc.includes('21') || lc.includes('carrera s')) return '21" Carrera S';
     if (lc.includes('22') || lc.includes('turbo')) return '22" Turbo';
     return null;
-  }, [selectedWheel]);
+  }, [selectedWheel, model]);
+
+  const staticImagesCayenne = useMemo(() => {
+    const name = model?.name || '';
+    if (name !== 'Cayenne' || !colorKey || !wheelKey) return null;
+    const byColor = cayenneImageMatrix[colorKey];
+    const byWheel = byColor?.[wheelKey];
+    if (!byWheel) return null;
+    const result = {};
+    angleOptions.forEach((angle) => {
+      if (byWheel[angle]) result[angle] = byWheel[angle];
+    });
+    return Object.keys(result).length ? result : null;
+  }, [model, colorKey, wheelKey]);
+
+  const staticImagesMacan = useMemo(() => {
+    const name = model?.name || '';
+    if (name !== 'Macan' || !colorKey || !wheelKey) return null;
+    const byColor = macanImageMatrix[colorKey];
+    const byWheel = byColor?.[wheelKey];
+    if (!byWheel) return null;
+    const result = {};
+    angleOptions.forEach((angle) => {
+      if (byWheel[angle]) result[angle] = byWheel[angle];
+    });
+    return Object.keys(result).length ? result : null;
+  }, [model, colorKey, wheelKey]);
+
+  const staticImagesTaycan = useMemo(() => {
+    const name = model?.name || '';
+    if (name !== 'Taycan' || !colorKey || !wheelKey) return null;
+    const byColor = taycanImageMatrix[colorKey];
+    const byWheel = byColor?.[wheelKey];
+    if (!byWheel) return null;
+    const result = {};
+    angleOptions.forEach((angle) => {
+      if (byWheel[angle]) result[angle] = byWheel[angle];
+    });
+    return Object.keys(result).length ? result : null;
+  }, [model, colorKey, wheelKey]);
 
   const staticImages911 = useMemo(() => {
     const name = model?.name || '';
@@ -150,13 +297,20 @@ function Stepper() {
   }, [model, colorKey, wheelKey]);
 
   const imagesToUse = useMemo(() => {
-    const base = staticImages911 || previewImages || null;
+    const base = staticImages911 || staticImagesTaycan || staticImagesMacan || staticImagesCayenne || previewImages || null;
     if (!base) return null;
     const withInterior = { ...base };
-    const interiorImg = selectedInterior && interiorImageLinks[selectedInterior];
+    const interiorMap = (model?.name === 'Taycan')
+      ? taycanInteriorImageLinks
+      : (model?.name === 'Macan')
+        ? macanInteriorImageLinks
+        : (model?.name === 'Cayenne')
+          ? cayenneInteriorImageLinks
+        : interiorImageLinks;
+    const interiorImg = selectedInterior && interiorMap[selectedInterior];
     if (interiorImg) withInterior.interior = interiorImg;
     return Object.keys(withInterior).length ? withInterior : null;
-  }, [staticImages911, previewImages, selectedInterior]);
+  }, [staticImages911, staticImagesTaycan, staticImagesMacan, staticImagesCayenne, previewImages, selectedInterior, model]);
 
   useEffect(() => {
     if (!imagesToUse) return;
@@ -177,7 +331,6 @@ function Stepper() {
         <NavBar />  
       </header>
       <div className="configurator-header">
-        
         <h1 style={{ margin: 0 }}>Car Configurator</h1>
         <div style={{ color: "#666" }}>Total: ${total.toLocaleString()}</div>
       </div>
@@ -185,20 +338,23 @@ function Stepper() {
       {step === 1 && (
         <>
           <h2>Select a Model</h2>
-          <div className="models-grid">
-            {models.map((m) => (
-              <ModelCard
-                key={m.id}
-                model={m}
-                image={modelImages[m.name] || TaycanImage}
-                selected={model?.id === m.id}
-                onSelect={() => setModel(m)}
-              />)
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, marginTop: 16 }}>
+            {models.length ? (
+              models.map((m) => (
+                <ModelCard
+                  key={m.id}
+                  model={m}
+                  image={modelImages[m.name] || TaycanImage}
+                  selected={model?.id === m.id}
+                  onSelect={() => {
+                    setModel(m);
+                    setStep(2);
+                  }}
+                />
+              ))
+            ) : (
+              <div style={{ color: '#666' }}>Loading models...</div>
             )}
-          </div>
-          <div className="sticky-pricebar">
-            <span>{model ? `${model.name} selected` : "Choose a model to continue"}</span>
-            <button disabled={!model} onClick={() => setStep(2)} className="btn-primary">Next</button>
           </div>
         </>
       )}
@@ -500,7 +656,7 @@ function Stepper() {
               onClick={async (e) => {
                 const btn = e.currentTarget;
                 const originalText = btn.innerHTML;
-                btn.innerHTML = '⏳ Generating...';
+                btn.innerHTML = 'Generating...';
                 btn.disabled = true;
                 try {
                   await exportPdf({ 
@@ -510,14 +666,14 @@ function Stepper() {
                     selected, 
                     imagesToUse 
                   });
-                  btn.innerHTML = '✓ PDF Created!';
+                  btn.innerHTML = 'PDF Created!';
                   setTimeout(() => {
                     btn.innerHTML = originalText;
                     btn.disabled = false;
                   }, 2000);
                 } catch (err) {
                   console.error('PDF export error:', err);
-                  btn.innerHTML = '❌ Error';
+                  btn.innerHTML = 'Error';
                   setTimeout(() => {
                     btn.innerHTML = originalText;
                     btn.disabled = false;
@@ -561,7 +717,6 @@ function Stepper() {
                 e.target.style.transform = 'translateY(-3px)';
               }}
             >
-              <span style={{ fontSize: 18 }}>📥</span>
               Export as PDF
             </button>
           </div>

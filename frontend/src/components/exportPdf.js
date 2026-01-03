@@ -1,25 +1,61 @@
 import jsPDF from "jspdf";
 
-// Helper function to load and convert image to data URL
-async function imageToDataUrl(src) {
+function isRemoteUrl(url) {
+  return /^https?:\/\//i.test(String(url || ''));
+}
+
+function toProxyUrl(url) {
+  return `/api/image-proxy?url=${encodeURIComponent(url)}`;
+}
+
+function blobToDataUrl(blob) {
   return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.src = src;
-    img.onload = () => {
-      try {
-        const canvas = document.createElement('canvas');
-        canvas.width = img.width;
-        canvas.height = img.height;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0);
-        resolve(canvas.toDataURL('image/jpeg', 0.85));
-      } catch (e) {
-        reject(e);
-      }
-    };
-    img.onerror = () => reject(new Error(`Failed to load image: ${src}`));
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error('Failed to read image blob'));
+    reader.readAsDataURL(blob);
   });
+}
+
+async function fetchImageAsDataUrl(src) {
+  const source = String(src || '').trim();
+  if (!source) throw new Error('Missing image source');
+
+  // Remote Porsche images are blocked by CORS/ORB when loaded directly in browser.
+  // Fetch them via our backend proxy so they become same-origin.
+  const fetchUrl = isRemoteUrl(source) ? toProxyUrl(source) : source;
+
+  const response = await fetch(fetchUrl);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch image (${response.status}): ${source}`);
+  }
+
+  const blob = await response.blob();
+  const dataUrl = await blobToDataUrl(blob);
+  const mime = blob.type || '';
+  const format = mime.toLowerCase().includes('png') ? 'PNG' : 'JPEG';
+
+  return { dataUrl, format };
+}
+
+function fitIntoBox(imgWidth, imgHeight, maxWidth, maxHeight) {
+  const safeImgWidth = Number(imgWidth) || 1;
+  const safeImgHeight = Number(imgHeight) || 1;
+  const scale = Math.min(maxWidth / safeImgWidth, maxHeight / safeImgHeight);
+  return {
+    width: safeImgWidth * scale,
+    height: safeImgHeight * scale,
+  };
+}
+
+function getImageDimensions(doc, dataUrl) {
+  try {
+    const props = doc.getImageProperties(dataUrl);
+    return { width: props.width, height: props.height };
+  } catch {
+    // Fallback: assume a 16:9-ish image if jsPDF can't introspect it.
+    return { width: 1600, height: 900 };
+  }
 }
 
 export default async function exportPdf({ 
@@ -60,13 +96,16 @@ export default async function exportPdf({
 
   // Add main preview image (3/4 view) - larger on first page
   if (imagesToUse?.threeQuarter) {
-    checkPageBreak(100);
+    checkPageBreak(110);
     try {
-      const imgData = await imageToDataUrl(imagesToUse.threeQuarter);
-      const imgHeight = 70;
-      const imgWidth = pageWidth - 2 * margin;
-      doc.addImage(imgData, 'JPEG', margin, y, imgWidth, imgHeight);
-      y += imgHeight + 6;
+      const { dataUrl, format } = await fetchImageAsDataUrl(imagesToUse.threeQuarter);
+      const maxWidth = pageWidth - 2 * margin;
+      const maxHeight = 90;
+      const { width: naturalW, height: naturalH } = getImageDimensions(doc, dataUrl);
+      const fitted = fitIntoBox(naturalW, naturalH, maxWidth, maxHeight);
+      const x = margin + (maxWidth - fitted.width) / 2;
+      doc.addImage(dataUrl, format, x, y, fitted.width, fitted.height);
+      y += fitted.height + 8;
     } catch (e) {
       console.error('Failed to add main preview image:', e);
     }
@@ -129,11 +168,11 @@ export default async function exportPdf({
         for (let i = 0; i < splitText.length; i++) {
           if (i === splitText.length - 1) {
             // Last line - add price on the right
-            doc.text(`• ${splitText[i]}`, margin + 4, y);
+            doc.text(`- ${splitText[i]}`, margin + 4, y);
             const priceXPos = pageWidth - margin - doc.getTextWidth(priceText) - 2;
             doc.text(priceText, priceXPos, y);
           } else {
-            doc.text(`• ${splitText[i]}`, margin + 4, y);
+            doc.text(`- ${splitText[i]}`, margin + 4, y);
           }
           y += 4;
         }
@@ -212,7 +251,6 @@ export default async function exportPdf({
   y += 10;
 
   // ===== ADDITIONAL VIEWS PAGE =====
-  checkPageBreak(50);
   doc.addPage();
   y = 16;
 
@@ -241,20 +279,22 @@ export default async function exportPdf({
           y += 8;
         }
 
-        const imgData = await imageToDataUrl(imagesToUse[angle]);
-        
-        const imgWidth = (pageWidth - 3 * margin) / 2;
-        const imgHeight = 60;
-        const xPos = margin + (viewsAdded % 2) * (imgWidth + margin);
-        
-        // Add image
-        doc.addImage(imgData, 'JPEG', xPos, y, imgWidth, imgHeight);
-        
-        // Add label below image
+        const { dataUrl, format } = await fetchImageAsDataUrl(imagesToUse[angle]);
+        const cellWidth = (pageWidth - 3 * margin) / 2;
+        const cellHeight = 75;
+        const xPos = margin + (viewsAdded % 2) * (cellWidth + margin);
+
+        const { width: naturalW, height: naturalH } = getImageDimensions(doc, dataUrl);
+        const fitted = fitIntoBox(naturalW, naturalH, cellWidth, cellHeight);
+        const xImg = xPos + (cellWidth - fitted.width) / 2;
+        const yImg = y + (cellHeight - fitted.height) / 2;
+        doc.addImage(dataUrl, format, xImg, yImg, fitted.width, fitted.height);
+
+        // Add label below cell
         doc.setFontSize(11);
         doc.setFont(undefined, 'bold');
         doc.setTextColor(50, 50, 50);
-        doc.text(angleLabels[angle], xPos + 4, y + imgHeight + 5);
+        doc.text(angleLabels[angle], xPos + 4, y + cellHeight + 6);
         
         viewsAdded++;
         
@@ -262,7 +302,7 @@ export default async function exportPdf({
           // After first image in row
         } else {
           // After second image in row, move down
-          y += imgHeight + 12;
+          y += cellHeight + 18;
         }
       } catch (e) {
         console.error(`Failed to add ${angle} image:`, e);
@@ -272,12 +312,11 @@ export default async function exportPdf({
 
   // Handle case where we only added one image
   if (viewsAdded % 2 === 1) {
-    y += 80;
+    y += 90;
   }
 
 
   // ===== FOOTER ON LAST PAGE =====
-  checkPageBreak(5);
   doc.setFontSize(8);
   doc.setTextColor(150, 150, 150);
   doc.setFont(undefined, 'italic');

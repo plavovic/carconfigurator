@@ -192,12 +192,25 @@ VALUES
   ('Wheels', '21" Carrera S', '21 inch performance wheels', 2500.00, 'W21S'),
   ('Wheels', '22" Turbo', '22 inch sport wheels', 3500.00, 'W22T');
 
+  -- Cayenne Wheels (exclusive)
+  INSERT INTO options (category, name, description, price_modifier, option_code) VALUES
+  ('Wheels', '20" Standard', 'Cayenne 20 inch standard wheels', 0.00, 'CA20S'),
+  ('Wheels', '21" Exclusive', 'Cayenne 21 inch Exclusive wheels', 2000.00, 'CA21E'),
+  ('Wheels', '22" Sport Design', 'Cayenne 22 inch Sport Design wheels', 3500.00, 'CA22SD');
+
 -- Insert Options - Wheels (Taycan exclusive wheels)
 INSERT INTO options (category, name, description, price_modifier, option_code)
 VALUES
   ('Wheels', '19" Standard (Taycan)', 'Taycan 19 inch standard wheels', 0.00, 'TY19S'),
   ('Wheels', '20" Turbo Sport (Taycan)', 'Taycan 20 inch turbo sport wheels', 1500.00, 'TY20T'),
   ('Wheels', '21" Mission E (Taycan)', 'Taycan 21 inch mission e wheels', 2500.00, 'TY21M');
+
+-- Insert Options - Wheels (Macan wheels)
+INSERT INTO options (category, name, description, price_modifier, option_code)
+VALUES
+  ('Wheels', '20" Standard', 'Macan 20 inch standard wheels', 0.00, 'MA20S'),
+  ('Wheels', '21" Offroad Style', 'Macan 21 inch offroad style wheels', 1500.00, 'MA21O'),
+  ('Wheels', '22" RS Spyder', 'Macan 22 inch RS Spyder wheels', 2500.00, 'MA22R');
 
 -- Insert Options - Interior
 INSERT INTO options (category, name, description, price_modifier, option_code)
@@ -216,6 +229,13 @@ VALUES
   ('Technology', 'Night Vision Assist (Carrera)', 'Infrared night vision assist', 3500.00, 'M9R1_CAR'),
   ('Technology', 'HD Matrix LED Headlights (Carrera)', 'The high-resolution HD-Matrix LED headlights', 2800.00, 'M8IU_CAR');
 
+-- Cayenne Technology (exclusive list for Cayenne)
+INSERT INTO options (category, name, description, price_modifier, option_code) VALUES
+('Technology', 'LED HD Matrix Headlights', 'LED HD Matrix Headlights for Cayenne', 2800.00, 'CA_M8IU'),
+('Technology', 'Rear Axle Steering', 'Rear Axle Steering for Cayenne', 1900.00, 'CA_M0N5'),
+('Technology', 'InnoDrive including Active Lane Keeping', 'InnoDrive including Active Lane Keeping for Cayenne', 2500.00, 'CA_PPY3'),
+('Technology', 'Night Vision Assist', 'Night Vision Assist for Cayenne', 2200.00, 'CA_M9R1');
+
 -- Insert Options - Taycan exclusive accessories
 INSERT INTO options (category, name, description, price_modifier, option_code)
 VALUES
@@ -223,6 +243,15 @@ VALUES
   ('Technology', 'Porsche Electric Sport Sound', 'Porsche Electric Sport Sound system', 1200.00, 'TY_PESS'),
   ('Technology', 'Night Vision Assist (Taycan)', 'Advanced night vision assist system for Taycan', 2500.00, 'M9R1_TY'),
   ('Technology', 'HD Matrix LED Headlights (Taycan)', 'The high-resolution HD-Matrix LED headlights for Taycan', 2800.00, 'M8IU_TY');
+
+-- Insert Options - Macan exclusive accessories
+INSERT INTO options (category, name, description, price_modifier, option_code)
+VALUES
+  ('Technology', 'Led HD Matrix Headlights', 'HD Matrix LED headlights for Macan', 2800.00, 'MA_M8IU'),
+  ('Technology', 'Power Steering Plus', 'Power Steering Plus for Macan', 300.00, 'MA_M1N3'),
+  ('Technology', 'Porsche Electric Sport Sound', 'Porsche Electric Sport Sound for Macan', 1200.00, 'MA_MGM3'),
+  ('Technology', 'Bose Surround Premium System', 'Bose Surround Sound System for Macan', 1500.00, 'MA_M9VL'),
+  ('Technology', 'Rear-Axle Steering', 'Rear-Axle Steering for Macan', 3500.00, 'MA_M0N5');
 
 -- Insert Services
 INSERT INTO services (name, description, price, image_url)
