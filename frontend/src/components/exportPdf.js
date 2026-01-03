@@ -67,34 +67,28 @@ export default async function exportPdf({
 }) {
   const doc = new jsPDF();
   let y = 16;
+
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
   const margin = 12;
 
-  // Helper function to add a new page if needed
   const checkPageBreak = (neededSpace = 20) => {
     if (y + neededSpace > pageHeight - 16) {
       doc.addPage();
-      y = 12;
+      y = 16;
     }
   };
 
-  // ===== PAGE 1: COVER / MAIN IMAGE =====
-  // Title
+  // ===== PAGE 1 =====
   doc.setFontSize(28);
-  doc.setFont(undefined, 'bold');
-  doc.setTextColor(0, 0, 0);
+  doc.setFont(undefined, "bold");
   doc.text("Porsche Configuration", margin, y);
+  y += 14;
+
+  doc.setFontSize(18);
+  doc.text(model?.name || "Vehicle", margin, y);
   y += 12;
 
-  // Model name with pricing
-  doc.setFontSize(18);
-  doc.setFont(undefined, 'bold');
-  doc.setTextColor(50, 50, 50);
-  doc.text(model?.name || "Vehicle", margin, y);
-  y += 10;
-
-  // Add main preview image (3/4 view) - larger on first page
   if (imagesToUse?.threeQuarter) {
     checkPageBreak(110);
     try {
@@ -111,20 +105,18 @@ export default async function exportPdf({
     }
   }
 
-  // Add base price on first page
-  y += 4;
   doc.setFontSize(12);
-  doc.setFont(undefined, 'normal');
-  doc.setTextColor(80, 80, 80);
-  doc.text(`Base Model Price: $${Number(basePrice).toLocaleString()}`, margin, y);
-  y += 8;
+  doc.setFont(undefined, "normal");
+  doc.text(
+    `Base Model Price: $${Number(basePrice).toLocaleString()}`,
+    margin,
+    y
+  );
+  y += 12;
 
-
-  // ===== SELECTED OPTIONS SECTION =====
-  checkPageBreak(30);
+  // ===== SELECTED OPTIONS =====
   doc.setFontSize(14);
-  doc.setFont(undefined, 'bold');
-  doc.setTextColor(0, 0, 0);
+  doc.setFont(undefined, "bold");
   doc.text("Selected Options & Upgrades", margin, y);
   y += 8;
 
@@ -176,108 +168,74 @@ export default async function exportPdf({
           }
           y += 4;
         }
-        
-        optionCount++;
-        checkPageBreak(5);
+        y += 4;
       }
-      
-      y += 2;
+      checkPageBreak(6);
     }
-
-    // Summary count
-    doc.setFontSize(9);
-    doc.setTextColor(120, 120, 120);
-    doc.setFont(undefined, 'italic');
-    doc.text(`Total options selected: ${optionCount}`, margin, y);
-    y += 6;
-  } else {
-    doc.setFontSize(10);
-    doc.setTextColor(100, 100, 100);
-    doc.text("No additional options selected", margin, y);
-    y += 6;
+    y += 2;
   }
 
+  doc.setFontSize(9);
+  doc.setFont(undefined, "italic");
+  doc.text(`Total options selected: ${optionCount}`, margin, y);
+  y += 10;
 
   // ===== PRICING SUMMARY =====
-  checkPageBreak(25);
-  
-  // Calculate option total
-  let optionTotal = 0;
-  for (const [, items] of selectedEntries) {
-    if (!items || (Array.isArray(items) && items.length === 0)) continue;
-    const itemsArray = Array.isArray(items) ? items : [items];
-    for (const item of itemsArray) {
-      optionTotal += Number(item?.price_modifier || 0);
-    }
-  }
+  checkPageBreak(40);
 
-  // Pricing box
-  y += 4;
-  doc.setDrawColor(0, 0, 0);
-  doc.setLineWidth(0.8);
+  doc.setFontSize(11);
+  doc.setFont(undefined, "normal");
+
   doc.line(margin, y, pageWidth - margin, y);
   y += 8;
 
-  doc.setFontSize(11);
-  doc.setFont(undefined, 'normal');
-  doc.setTextColor(60, 60, 60);
-  
-  const baseText = `Base Price (${model?.name || 'Model'})`;
-  doc.text(baseText, margin, y);
-  const basePrice$ = `$${Number(basePrice).toLocaleString()}`;
-  doc.text(basePrice$, pageWidth - margin - doc.getTextWidth(basePrice$), y);
+  doc.text("Base Price", margin, y);
+  doc.text(
+    `$${Number(basePrice).toLocaleString()}`,
+    pageWidth - margin - doc.getTextWidth(`$${basePrice}`),
+    y
+  );
   y += 6;
 
-  if (optionTotal > 0) {
-    doc.text("Selected Options Total", margin, y);
-    const optTotal$ = `+$${Number(optionTotal).toLocaleString()}`;
-    doc.text(optTotal$, pageWidth - margin - doc.getTextWidth(optTotal$), y);
-    y += 8;
-  }
-
-  // Total price - prominent
-  doc.setDrawColor(0, 0, 0);
-  doc.setLineWidth(1);
-  doc.line(margin, y, pageWidth - margin, y);
-  y += 6;
+  doc.text("Options Total", margin, y);
+  doc.text(
+    `+$${optionTotal.toLocaleString()}`,
+    pageWidth - margin - doc.getTextWidth(`+$${optionTotal}`),
+    y
+  );
+  y += 8;
 
   doc.setFontSize(16);
-  doc.setFont(undefined, 'bold');
-  doc.setTextColor(0, 0, 0);
-  const totalText = `Total Price`;
-  doc.text(totalText, margin, y);
-  const totalPrice$ = `$${Number(total).toLocaleString()}`;
-  doc.text(totalPrice$, pageWidth - margin - doc.getTextWidth(totalPrice$), y);
-  y += 10;
+  doc.setFont(undefined, "bold");
+  doc.line(margin, y, pageWidth - margin, y);
+  y += 8;
+
+  doc.text("Total Price", margin, y);
+  doc.text(
+    `$${Number(total).toLocaleString()}`,
+    pageWidth - margin - doc.getTextWidth(`$${total}`),
+    y
+  );
 
   // ===== ADDITIONAL VIEWS PAGE =====
   doc.addPage();
   y = 16;
 
   doc.setFontSize(16);
-  doc.setFont(undefined, 'bold');
-  doc.setTextColor(0, 0, 0);
+  doc.setFont(undefined, "bold");
   doc.text("Additional Views", margin, y);
   y += 12;
 
-  // Add all available angle views in a grid
-  const angleViews = ['side', 'rear', 'interior'];
-  let angleLabels = {
-    'side': 'Side View',
-    'rear': 'Rear View',
-    'interior': 'Interior View'
-  };
+  const views = [
+    { key: "side", label: "Side View" },
+    { key: "rear", label: "Rear View" },
+    { key: "interior", label: "Interior View" },
+  ];
 
-  let viewsAdded = 0;
+  let index = 0;
 
-  for (const angle of angleViews) {
-    if (imagesToUse?.[angle]) {
-      try {
-        // Check if we need a new row
-        if (viewsAdded > 0 && viewsAdded % 2 === 0) {
-          checkPageBreak(90);
-          y += 8;
-        }
+  for (const v of views) {
+    if (!imagesToUse?.[v.key]) continue;
 
         const { dataUrl, format } = await fetchImageAsDataUrl(imagesToUse[angle]);
         const cellWidth = (pageWidth - 3 * margin) / 2;
@@ -315,6 +273,9 @@ export default async function exportPdf({
     y += 90;
   }
 
+    if (index % 2 === 1) y += imgHeight + 16;
+    index++;
+  }
 
   // ===== FOOTER ON LAST PAGE =====
   doc.setFontSize(8);
@@ -322,16 +283,21 @@ export default async function exportPdf({
   doc.setFont(undefined, 'italic');
   
   const now = new Date().toLocaleString();
-  doc.text(`Configuration generated: ${now}`, margin, pageHeight - 8);
-  
-  // Page numbers
   const totalPages = doc.internal.pages.length - 1;
+
   for (let i = 1; i <= totalPages; i++) {
     doc.setPage(i);
     doc.setFontSize(8);
-    doc.setTextColor(180, 180, 180);
-    doc.text(`Page ${i} of ${totalPages}`, pageWidth - margin - 15, pageHeight - 8);
+    doc.setFont(undefined, "italic");
+    doc.text(`Generated: ${now}`, margin, pageHeight - 8);
+    doc.text(
+      `Page ${i} of ${totalPages}`,
+      pageWidth - margin - 20,
+      pageHeight - 8
+    );
   }
 
-  doc.save(`Porsche-${model?.name || 'Configuration'}-${Date.now()}.pdf`);
+  doc.save(
+    `Porsche-${model?.name || "Configuration"}-${Date.now()}.pdf`
+  );
 }

@@ -13,7 +13,7 @@ function App() {
   return (
     <div className="App">
         
-        <div className="video-container">
+        <div className="heading-text">
           <h1>TAYCAN</h1>  
         </div>
       <div className="navbar-container">
@@ -45,6 +45,7 @@ function App() {
       </section>
       </main>
       <footer>
+        <Footer />
       </footer>
     </div>
   );
