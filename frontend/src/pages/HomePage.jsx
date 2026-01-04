@@ -34,7 +34,7 @@ function HomePage () {
         <TestCarCard 
         image={TaycanImage}
         model="Taycan"
-        tags={["Electric", "Sedan"]}
+        tags={["Electric", "Sedan", "All-Wheel Drive"]}
         stats={[
           { value: "3.7s", label: "Acceleration 0–100 km/h" },
           { value: "616hp", label: "Overboost Power" },
@@ -46,37 +46,37 @@ function HomePage () {
         <TestCarCard 
         image={CayenneImage}
         model="Cayenne"
-        tags={["SUV", "Petrol"]} 
+        tags={["Gasoline","SUV", "Automatic"]} 
         stats={[
           { value: "4.9s", label: "Acceleration 0–100 km/h" },
           { value: "470hp", label: "Max Power" },
           { value: "253km/h", label: "Top Speed" }
         ]}
-        consumption="Fuel consumption combined (model range): 11.7 – 10.6 l/100 km, CO₂-emissions (model range): 266 – 242 g/km"
+        consumption="Fuel consumption combined (model range): 11.7 – 10.6 l/100 km, CO₂: 267 – 242 g/km"
         />
 
         <TestCarCard 
         image={NineElevenImage}
         model="911 Carrera"
-        tags={["Coupe", "Petrol"]}
+        tags={[ "Gasoline", "Coupe", "Automatic"]}
         stats={[
           { value: "4.2s", label: "Acceleration 0–100 km/h" },
           { value: "385hp", label: "Power" },
           { value: "293km/h", label: "Top Speed" }
         ]}
-        consumption="Fuel consumption combined (model range): 10.5 – 9.9 l/100 km, CO₂-emissions (model range): 240 – 226 g/km"
+        consumption="Fuel consumption combined (model range): 10.5 – 9.9 l/100 km, CO₂: 240 – 226 g/km"
         />
 
         <TestCarCard 
         image={MacanImage}
         model="Macan"
-        tags={["Compact SUV"]}
+        tags={["Electric","Compact SUV", "Automatic"]}
         stats={[
           { value: "4.6s", label: "Acceleration 0–100 km/h" },
           { value: "440hp", label: "Power" },
           { value: "270km/h", label: "Top Speed" }
         ]}
-        consumption="Electric energy consumption combined (model range): 19.3 – 16.7 kWh/100 km, CO₂: 0 g/km (preliminary value)"
+        consumption="Electric energy consumption combined (model range): 19.3 – 16.7 kWh/100 km, CO₂: 0 g/km"
         />
         </div>
       <div className="img-carousel-container">

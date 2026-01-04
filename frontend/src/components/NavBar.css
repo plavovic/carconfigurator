@@ -176,3 +176,15 @@ body {
 .main-content {
   padding-top: var(--nav-height);
 }
+
+/* Navbar responsive tweaks */
+@media (max-width: 700px) {
+  .navbar { padding: 0 0.75rem; }
+  .navbar-right { display: none; } /* hide right-side items on small screens; sidebar toggle should be used */
+  .navbar-logo { font-size: 1rem; }
+}
+
+@media (max-width: 420px) {
+  .navbar { height: 48px; }
+  .navbar-left { gap: 0.5rem; }
+}

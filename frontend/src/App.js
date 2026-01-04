@@ -9,8 +9,12 @@ import { Routes, Route } from "react-router-dom";
 //bug in page taycan, css overlapping other pages
 
 
-import Configurator from "./pages/Configurator.jsx";
 
+
+import HomePage from "./pages/HomePage.jsx";
+import Configurator from "./pages/Configurator.jsx";
+import EPerformance from "./pages/EPerformance.jsx";
+import Informations from "./pages/Informations.jsx";
 
 
 
@@ -18,7 +22,10 @@ import Configurator from "./pages/Configurator.jsx";
 function App() {
   return (
     <Routes>
-      <Route path="/configurator" element={<Configurator />} />
+      <Route path="/" element ={<HomePage />} />
+      <Route path="/configurator" element ={<Configurator />} />
+      <Route path="/eperformance" element ={<EPerformance />} />
+      <Route path="/informations" element ={<Informations />} />
     </Routes>
   );
 }

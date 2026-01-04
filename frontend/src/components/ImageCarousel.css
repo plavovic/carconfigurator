@@ -1,7 +1,7 @@
 .carousel-container {
   position: relative;
-  width: 90vh;
-  max-width: 2000px;
+  width: 100%;
+  max-width: 1200px;
   margin: 20px auto;
   display: flex;
   align-items: center;
@@ -67,4 +67,17 @@
 
 .right-arrow {
   margin-left: 10px;
+}
+
+/* Make carousel responsive on small screens */
+@media (max-width: 700px) {
+  .carousel-container { padding: 0 8px; }
+  .carousel-image { border-radius: 6px; }
+  .arrow { font-size: 1.8rem; }
+}
+
+@media (max-width: 420px) {
+  .carousel-container { margin: 8px auto; }
+  .carousel-image { aspect-ratio: 4/3; }
+  .arrow { font-size: 1.4rem; }
 }

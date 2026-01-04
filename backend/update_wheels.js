@@ -22,9 +22,10 @@ const wheelUpdates = [
 async function updateWheels() {
   try {
     for (const wheel of wheelUpdates) {
+      // Match option names approximately (some DB rows include model suffixes)
       await db.query(
-        'UPDATE options SET image_url = $1 WHERE name = $2 AND category = $3',
-        [wheel.url, wheel.name, 'Wheels']
+        'UPDATE options SET image_url = $1 WHERE name ILIKE $2 AND category = $3',
+        [wheel.url, `%${wheel.name}%`, 'Wheels']
       );
       console.log(`Updated ${wheel.name}`);
     }

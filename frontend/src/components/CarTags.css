@@ -17,7 +17,30 @@
   transition: 0.25s ease;
 }
 
-.car-tags span::hover {
+.car-tags .tag:hover {
+  background: #dcdcdc;
+  border-color: #dcdcdc;
+}
+
+/* Fuel-specific styles */
+/* Fuel-specific styles: keep gasoline neutral; electric is highlighted green */
+.car-tags .fuel {
+  /* neutral base so non-electric fuel types don't get a special color */
   background: #e2e2e2;
   border-color: #e2e2e2;
+  color: #333;
+}
+
+.car-tags .fuel.fuel-electric,
+.car-tags .fuel-electric {
+  background: #d6f6d8; /* stronger light green */
+  border-color: #34c759; /* vivid green border */
+  color: #054e11; /* darker green text for contrast */
+  font-weight: 600;
+}
+
+.car-tags .fuel.fuel-electric:hover,
+.car-tags .fuel-electric:hover {
+  background: #c9f0c9;
+  border-color: #2fa94f;
 }

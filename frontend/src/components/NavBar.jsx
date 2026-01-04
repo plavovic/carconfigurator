@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './NavBar.css';
 
 const NavBar = () => {
@@ -7,6 +8,7 @@ const NavBar = () => {
 
     const closeSidebar = () => setIsSidebarOpen(false);
     const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
+    const navigate = useNavigate();
    
    
    
@@ -108,9 +110,11 @@ const NavBar = () => {
 
         <nav className="sidebar-nav">
           {/* Add your own links/options here */}
-          <button className="sidebar-item">Home</button>
-          <button className="sidebar-item">About</button>
-          <button className="sidebar-item">Contact</button>
+          <button className="sidebar-item" onClick={() => navigate("/")}>Home</button>
+          <button className="sidebar-item" onClick={() => navigate("/configurator")}>Configurator</button>
+          <button className="sidebar-item" onClick={() => navigate("/eperformance")}>E-Performance</button>
+          <button className="sidebar-item" onClick={() => navigate("/informations")}>Informations</button>
+          <button className="sidebar-item" onClick={() => navigate("/")}>Services</button>
           {/* etc… */}
         </nav>
       </aside>

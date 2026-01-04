@@ -17,6 +17,7 @@ body {
   padding: 0;
   width: 100%;
   min-height: 100vh;
+  /* height removed to restore original min-height usage */
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
@@ -35,4 +36,14 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+/* Make anchors inherit color and remove default underlines globally
+   so browser default blue/purple don't appear; specific areas can override */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+a:visited {
+  color: inherit;
 }

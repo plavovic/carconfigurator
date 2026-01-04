@@ -12,53 +12,53 @@ import {ReactComponent as Mail} from '../assets/contactmailicon.svg';
 
 function Footer() {
     
-    return (
-    <div className="fcontainer">
-        <div className="text-container">
-        <h1>Get In Touch With Us</h1>
-        </div>
+        return (
+        <div className="fcontainer">
+                <div className="text-container">
+                <h1>Get In Touch With Us</h1>
+                </div>
     
-
+    
         
-    <div className="social-media">
-        <div className="social-media-top">
-        <div className="social-h">
-        <h1>Social Media</h1>
-        <h2>Contact us via social media.</h2>
-        </div>
-        <div className="contacts">
-        <div className="call">
-            <Call className="icon"></Call>
-            <a href="tel:+38760000000">+387 60 000 000</a>
-        </div>
-        <div className="mail">
-            <Mail className="icon"></Mail>
-            <a href="mailto:info@carconfigurator.com">info@carconfigurator.com</a>
-        </div>
-        </div>
+        <div className="social-media">
+                <div className="social-media-top">
+                <div className="social-h">
+                <h1>Social Media</h1>
+                <h2>Contact us via social media.</h2>
+                </div>
+                <div className="contacts">
+                <div className="call">
+                        <Call className="icon"></Call>
+                        <a href="tel:+38760000000">+387 60 000 000</a>
+                </div>
+                <div className="mail">
+                        <Mail className="icon"></Mail>
+                        <a href="mailto:info@carconfigurator.com">info@carconfigurator.com</a>
+                </div>
+                </div>
 
 
 
-        </div>
-        <div className="social-media-icons">
-            <Instagram className="icon"></Instagram>
-            <Facebook className="icon"></Facebook>
-            <Youtube className="icon"></Youtube>
-            <Linkedin className="icon"></Linkedin>
-        </div>
-        </div>
+                </div>
+                <div className="social-media-icons">
+                        <Instagram className="icon"></Instagram>
+                        <Facebook className="icon"></Facebook>
+                        <Youtube className="icon"></Youtube>
+                        <Linkedin className="icon"></Linkedin>
+                </div>
+                </div>
 
-        <div className="further-links">
-            <a href="/">Electric Vehicles</a>
-            <a href="/licenses">Licenses</a>
-            <a href="/services">Services</a>
+                <div className="further-links">
+                        <a href="/eperformance">Electric Vehicles</a>
+                        <a href="/licenses">Licenses</a>
+                        <a href="/services">Services</a>
+                </div>
+                <div className="underline"></div>
+                <div className="license">
+                        <LicenseText />
+                </div>
         </div>
-        <div className="underline"></div>
-        <div className="license">
-            <LicenseText />
-        </div>
-    </div>
-    );
+        );
 
 }
 

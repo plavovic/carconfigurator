@@ -1,17 +1,20 @@
 .carcard-container {
     width: 100%;
-    margin: 0;
+    max-width: 340px;
+    margin: 12px; /* creates gap between cards when laid out in a row/column */
     background: white;
     border-radius: 30px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 60px 20px 24px;
-    height: 650px;
+    padding: 36px 14px 20px;
+    min-height: 520px;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 
     display: flex;
     flex-direction: column;
+    box-sizing: border-box;
+    flex: 0 0 auto; /* prevent cards from shrinking in flex rows */
 }
 
 
@@ -32,7 +35,7 @@
     width: 100%;
     height: auto;
     object-fit: contain;
-    margin-top: -100px;
+    margin-top: -40px; /* reduced negative margin to avoid overlap between cards */
 }
 
 
@@ -42,25 +45,25 @@
     font-family: 'Sofia Sans', sans-serif;
     color: black;
     text-align: center;
-    margin-top: -40px;
+    margin-top: 0;
 }
 
 .car-tags {
-    margin-top: -10px;
+    margin-top: 0;
     display: flex;
     justify-content: center;
 }
 
 
 .model-info {
-    margin-top: -12px;
+    margin-top: 6px;
 }
 
 .model-info p {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 600;
     font-family: 'Sofia Sans', sans-serif;
-    margin: 24px 20px;
+    margin: 12px 12px;
     text-align: left;
 }
 
@@ -77,11 +80,11 @@
     color: gray;
     font-size: 13px;
     font-weight: 300;
-    margin-top: 5px;
-    margin-bottom: 20px;
+    margin-top: 4px;
+    margin-bottom: 12px;
     font-family: 'Sofia Sans', sans-serif;
     text-align: center;
-    padding: 0 10px;
+    padding: 0 8px;
 }
 
 /* BUTTONS */
@@ -90,6 +93,6 @@
     justify-content: center;
     align-items: center;
     gap: 12px;
-    
-    margin-top: -20px;
+    margin-top: auto; /* push buttons to the bottom of the card */
+    padding-bottom: 8px;
 }

@@ -1,0 +1,55 @@
+.legal-page {
+  min-height: 100vh;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.legal-container {
+  max-width: 900px;
+  margin: 0 auto;
+  color: #111;
+  margin-top: 100px;
+    margin-bottom: 100px;
+}
+
+.legal-title {
+  font-size: 36px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.legal-intro {
+  font-size: 18px;
+}
+
+section {
+  margin-top: 48px;
+}
+
+section h2 {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+section p {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+section ul {
+  padding-left: 18px;
+  margin-top: 10px;
+}
+
+section ul li {
+  font-size: 15px;
+  color: #333;
+}
+
+.legal-muted {
+  color: #666;
+  font-size: 14px;
+  margin-top: 60px;
+}
