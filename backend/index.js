@@ -15,6 +15,8 @@ const modelsRoute = require('./routes/models');
 const configurationsRoute = require('./routes/configurations');
 const imageProxyRoute = require('./routes/imageProxy');
 const inventoryRoute = require('./routes/inventory');
+const usersRoute = require('./routes/users');
+
 
 app.get("/", (req, res) => {    //test performed -- simple server check
   res.send("Backend is running ✅");
@@ -32,6 +34,8 @@ app.get("/api/test-db", async (req, res) => { //test performed -- database check
         res.status(500).json({error: "DB test failed"});
     }
 });
+
+app.use('/api/users', require('./routes/users'));
 
 app.use("/api/options", optionsRoute);
 

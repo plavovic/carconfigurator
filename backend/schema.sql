@@ -1,8 +1,5 @@
--- PostgreSQL Database Schema for Car Configurator
--- Created for Porsche Car Configurator Application
-
 -- =====================================================
--- DROP EXISTING TABLES (if they exist)
+-- DROP EXISTING TABLES
 -- =====================================================
 DROP TABLE IF EXISTS configuration_items CASCADE;
 DROP TABLE IF EXISTS configurations CASCADE;
@@ -17,7 +14,7 @@ DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS services CASCADE;
 
 -- =====================================================
--- USERS TABLE
+-- USERS
 -- =====================================================
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
@@ -31,264 +28,184 @@ CREATE TABLE users (
   is_active BOOLEAN DEFAULT TRUE
 );
 
-CREATE INDEX idx_users_email ON users(email);
-
 -- =====================================================
--- CAR MODELS TABLE
+-- CAR MODELS
 -- =====================================================
 CREATE TABLE car_models (
   id SERIAL PRIMARY KEY,
-  name VARCHAR(100) NOT NULL UNIQUE,
+  name VARCHAR(100) UNIQUE NOT NULL,
   description TEXT,
-  base_price DECIMAL(10, 2) NOT NULL,
-  model_code VARCHAR(50), -- Porsche model code for image API
-  config_code TEXT, -- Configuration code (can exceed 255 chars) for Porsche image API
-  zero_to_hundred_km_h DECIMAL(3, 1),
+  base_price DECIMAL(10,2) NOT NULL,
+  model_code VARCHAR(50),
+  config_code TEXT,
+  zero_to_hundred_km_h DECIMAL(3,1),
   top_speed_km_h INTEGER,
   power_hp INTEGER,
   power_kw INTEGER,
-  energy_consumption_kWh_per_100km DECIMAL(4, 1),
-  co2_emissions_g_per_km DECIMAL(4, 1),
+  energy_consumption_kWh_per_100km DECIMAL(4,1),
+  co2_emissions_g_per_km DECIMAL(4,1),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_car_models_name ON car_models(name);
-
 -- =====================================================
--- OPTIONS TABLE (Colors, Wheels, Interior, etc.)
+-- OPTIONS
 -- =====================================================
 CREATE TABLE options (
   id SERIAL PRIMARY KEY,
   category VARCHAR(100) NOT NULL,
-  name VARCHAR(100) NOT NULL,
+  name VARCHAR(150) NOT NULL,
   description TEXT,
-  price_modifier DECIMAL(10, 2) DEFAULT 0,
-  option_code VARCHAR(50), -- Porsche option code for image API
-  hex_color VARCHAR(7), -- Color hex code for paint colors
+  price_modifier DECIMAL(10,2) DEFAULT 0,
+  option_code VARCHAR(50),
+  hex_color VARCHAR(7),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE(category, name)
+  UNIQUE (category, name)
 );
 
-CREATE INDEX idx_options_category ON options(category);
-
 -- =====================================================
--- CAR_MODEL_OPTIONS (Many-to-Many relationship)
+-- CAR MODEL OPTIONS
 -- =====================================================
 CREATE TABLE car_model_options (
   id SERIAL PRIMARY KEY,
-  car_model_id INTEGER NOT NULL REFERENCES car_models(id) ON DELETE CASCADE,
-  option_id INTEGER NOT NULL REFERENCES options(id) ON DELETE CASCADE,
-  UNIQUE(car_model_id, option_id)
+  car_model_id INTEGER REFERENCES car_models(id) ON DELETE CASCADE,
+  option_id INTEGER REFERENCES options(id) ON DELETE CASCADE,
+  UNIQUE (car_model_id, option_id)
 );
 
-CREATE INDEX idx_car_model_options_car_model_id ON car_model_options(car_model_id);
-CREATE INDEX idx_car_model_options_option_id ON car_model_options(option_id);
-
 -- =====================================================
--- CONFIGURATIONS TABLE
+-- CONFIGURATIONS
 -- =====================================================
 CREATE TABLE configurations (
   id SERIAL PRIMARY KEY,
-  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  car_model_id INTEGER NOT NULL REFERENCES car_models(id) ON DELETE CASCADE,
+  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  car_model_id INTEGER REFERENCES car_models(id) ON DELETE CASCADE,
   configuration_name VARCHAR(255),
-  total_price DECIMAL(10, 2),
+  total_price DECIMAL(10,2),
   is_saved BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_configurations_user_id ON configurations(user_id);
-CREATE INDEX idx_configurations_car_model_id ON configurations(car_model_id);
-CREATE INDEX idx_configurations_created_at ON configurations(created_at);
-
--- =====================================================
--- CONFIGURATION_ITEMS (Selected options per configuration)
--- =====================================================
 CREATE TABLE configuration_items (
   id SERIAL PRIMARY KEY,
-  configuration_id INTEGER NOT NULL REFERENCES configurations(id) ON DELETE CASCADE,
-  option_id INTEGER NOT NULL REFERENCES options(id) ON DELETE CASCADE,
-  price_at_selection DECIMAL(10, 2),
+  configuration_id INTEGER REFERENCES configurations(id) ON DELETE CASCADE,
+  option_id INTEGER REFERENCES options(id) ON DELETE CASCADE,
+  price_at_selection DECIMAL(10,2),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_configuration_items_configuration_id ON configuration_items(configuration_id);
-CREATE INDEX idx_configuration_items_option_id ON configuration_items(option_id);
-
 -- =====================================================
--- INVENTORY (Dealership stock units)
+-- INVENTORY
 -- =====================================================
 CREATE TABLE inventory_units (
   id SERIAL PRIMARY KEY,
-  car_model_id INTEGER NOT NULL REFERENCES car_models(id) ON DELETE CASCADE,
+  car_model_id INTEGER REFERENCES car_models(id) ON DELETE CASCADE,
   dealership_name VARCHAR(150),
   label VARCHAR(255),
   status VARCHAR(50) DEFAULT 'available',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_inventory_units_car_model_id ON inventory_units(car_model_id);
-CREATE INDEX idx_inventory_units_status ON inventory_units(status);
-
 CREATE TABLE inventory_unit_options (
   id SERIAL PRIMARY KEY,
-  inventory_unit_id INTEGER NOT NULL REFERENCES inventory_units(id) ON DELETE CASCADE,
-  option_id INTEGER NOT NULL REFERENCES options(id) ON DELETE CASCADE,
-  UNIQUE(inventory_unit_id, option_id)
+  inventory_unit_id INTEGER REFERENCES inventory_units(id) ON DELETE CASCADE,
+  option_id INTEGER REFERENCES options(id) ON DELETE CASCADE,
+  UNIQUE (inventory_unit_id, option_id)
 );
 
-CREATE INDEX idx_inventory_unit_options_inventory_unit_id ON inventory_unit_options(inventory_unit_id);
-CREATE INDEX idx_inventory_unit_options_option_id ON inventory_unit_options(option_id);
-
 -- =====================================================
--- ORDERS TABLE
+-- ORDERS
 -- =====================================================
 CREATE TABLE orders (
   id SERIAL PRIMARY KEY,
-  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
   configuration_id INTEGER REFERENCES configurations(id) ON DELETE SET NULL,
   order_number VARCHAR(50) UNIQUE NOT NULL,
-  total_amount DECIMAL(10, 2) NOT NULL,
+  total_amount DECIMAL(10,2) NOT NULL,
   status VARCHAR(50) DEFAULT 'pending',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_orders_user_id ON orders(user_id);
-CREATE INDEX idx_orders_status ON orders(status);
-CREATE INDEX idx_orders_created_at ON orders(created_at);
-
 -- =====================================================
--- REVIEWS/RATINGS TABLE
+-- REVIEWS
 -- =====================================================
 CREATE TABLE reviews (
   id SERIAL PRIMARY KEY,
-  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  car_model_id INTEGER NOT NULL REFERENCES car_models(id) ON DELETE CASCADE,
-  rating INTEGER CHECK (rating >= 1 AND rating <= 5),
+  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  car_model_id INTEGER REFERENCES car_models(id) ON DELETE CASCADE,
+  rating INTEGER CHECK (rating BETWEEN 1 AND 5),
   comment TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_reviews_car_model_id ON reviews(car_model_id);
-CREATE INDEX idx_reviews_user_id ON reviews(user_id);
-
 -- =====================================================
--- SERVICES TABLE
+-- SERVICES
 -- =====================================================
 CREATE TABLE services (
   id SERIAL PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
   description TEXT,
-  price DECIMAL(10, 2),
+  price DECIMAL(10,2),
   image_url VARCHAR(255),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- =====================================================
--- SAMPLE DATA INSERTION
+-- SAMPLE DATA
 -- =====================================================
 
--- Insert Car Models
-INSERT INTO car_models (name, description, base_price, model_code, config_code, zero_to_hundred_km_h, top_speed_km_h, power_hp, power_kw, energy_consumption_kWh_per_100km, co2_emissions_g_per_km)
+INSERT INTO car_models (name, description, base_price, model_code)
 VALUES
-  ('Taycan', 'Porsche Taycan is an all-electric sports sedan', 103000.00, 'Y1AEN1', 'N4Igxg9gdgZglgcxALlAQynAtmgLnaAZxQG0BdAGnDSwFMAnNFUOAExRFoA9cBaAGwgB3XjHrQ+-WjFwgqEAA74izEADc09OBlnIQrWoQDWuRSAC+5qrShq44qHSi6W7PQHk0hOMXlKCUMSollT8iAAW+FBIqCBsHAAiAIIAmnIgisqBzCEgCuKsAK5gLnFuIACcFQBMAIwAQtXpmQFBoJCFzvQAngDCEAYcAOpD6VgDtPwptJoo1QAM1QBsfllBJCC1ACoAzOk79XtUAKwV9elLAJJHIADsSQDS6bcA4hXpFQBaAKLp3wCyTSoL1qADF0pchjcAFLfG4AGReWwSACV4el3LV0gAFAAS6QAisckoSUe8qASAGo3ACq2PJIEp8KaZEsVhAhFouCiCDaIBgEHoOF0IAAVgpaEgqLhGIEFJobLoYGh+JzLEA', 3.1, 260, 616, 459, 19.1, 0),
-  ('911', 'Iconic Porsche sports car', 95000.00, '992', NULL, 3.2, 320, 580, 430, NULL, NULL),
-  ('Cayenne', 'Luxury sport utility vehicle', 85000.00, 'E3', NULL, 3.6, 280, 550, 410, NULL, NULL),
-  ('Macan', 'Compact luxury crossover SUV', 65000.00, '95B', NULL, 5.2, 245, 340, 252, NULL, NULL);
+('Taycan', 'Electric sports sedan', 103000, 'Y1AEN1'),
+('911', 'Iconic sports car', 95000, '992'),
+('Cayenne', 'Luxury SUV', 85000, 'E3'),
+('Macan', 'Compact SUV', 65000, '95B');
 
--- Insert Options - Exterior Colors
-INSERT INTO options (category, name, description, price_modifier, option_code, hex_color)
-VALUES
-  ('Exterior Color', 'Jet Black', 'Classic black finish', 0.00, 'C9X', '#000000'),
-  ('Exterior Color', 'Alpine White', 'Pure white finish', 2500.00, 'C9A', '#FFFFFF'),
-  ('Exterior Color', 'Agate Grey', 'Sophisticated grey', 3000.00, 'C9Y', '#505559'),
-  ('Exterior Color', 'Miami Blue', 'Vibrant blue finish', 4000.00, 'C3E', '#00B0F0'),
-  ('Exterior Color', 'Racing Yellow', 'Bright yellow finish', 3500.00, 'C16', '#FFD700');
+-- ===================== OPTIONS ======================
 
--- Insert Options - Wheels (Carrera wheels)
-INSERT INTO options (category, name, description, price_modifier, option_code)
-VALUES
-  ('Wheels', '19" Standard', 'OEM 19 inch wheels', 0.00, 'W19S'),
-  ('Wheels', '20" Carrera Classic', '20 inch alloy wheels', 1500.00, 'W20C'),
-  ('Wheels', '21" Carrera S', '21 inch performance wheels', 2500.00, 'W21S'),
-  ('Wheels', '22" Turbo', '22 inch sport wheels', 3500.00, 'W22T');
+-- Exterior Colors
+INSERT INTO options (category, name, price_modifier, option_code, hex_color) VALUES
+('Exterior Color', 'Jet Black', 0, 'C9X', '#000000'),
+('Exterior Color', 'Alpine White', 2500, 'C9A', '#FFFFFF'),
+('Exterior Color', 'Miami Blue', 4000, 'C3E', '#00B0F0');
 
-  -- Cayenne Wheels (exclusive)
-  INSERT INTO options (category, name, description, price_modifier, option_code) VALUES
-  ('Wheels', '20" Standard', 'Cayenne 20 inch standard wheels', 0.00, 'CA20S'),
-  ('Wheels', '21" Exclusive', 'Cayenne 21 inch Exclusive wheels', 2000.00, 'CA21E'),
-  ('Wheels', '22" Sport Design', 'Cayenne 22 inch Sport Design wheels', 3500.00, 'CA22SD');
+-- Wheels (UNIQUE NAMES)
+INSERT INTO options (category, name, price_modifier, option_code) VALUES
+('Wheels', '19" Standard – Carrera', 0, 'W19S'),
+('Wheels', '20" Carrera Classic', 1500, 'W20C'),
+('Wheels', '21" Carrera S', 2500, 'W21S'),
+('Wheels', '20" Standard – Cayenne', 0, 'CA20S'),
+('Wheels', '21" Exclusive – Cayenne', 2000, 'CA21E'),
+('Wheels', '20" Standard – Macan', 0, 'MA20S'),
+('Wheels', '21" Offroad Style – Macan', 1500, 'MA21O'),
+('Wheels', '19" Standard – Taycan', 0, 'TY19S'),
+('Wheels', '20" Turbo Sport – Taycan', 1500, 'TY20T');
 
--- Insert Options - Wheels (Taycan exclusive wheels)
-INSERT INTO options (category, name, description, price_modifier, option_code)
-VALUES
-  ('Wheels', '19" Standard (Taycan)', 'Taycan 19 inch standard wheels', 0.00, 'TY19S'),
-  ('Wheels', '20" Turbo Sport (Taycan)', 'Taycan 20 inch turbo sport wheels', 1500.00, 'TY20T'),
-  ('Wheels', '21" Mission E (Taycan)', 'Taycan 21 inch mission e wheels', 2500.00, 'TY21M');
+-- Interior
+INSERT INTO options (category, name, price_modifier, option_code) VALUES
+('Interior', 'Black Leather', 0, 'INTB'),
+('Interior', 'Bordeaux Leather', 2000, 'INTR');
 
--- Insert Options - Wheels (Macan wheels)
-INSERT INTO options (category, name, description, price_modifier, option_code)
-VALUES
-  ('Wheels', '20" Standard', 'Macan 20 inch standard wheels', 0.00, 'MA20S'),
-  ('Wheels', '21" Offroad Style', 'Macan 21 inch offroad style wheels', 1500.00, 'MA21O'),
-  ('Wheels', '22" RS Spyder', 'Macan 22 inch RS Spyder wheels', 2500.00, 'MA22R');
+-- Technology
+INSERT INTO options (category, name, price_modifier, option_code) VALUES
+('Technology', 'Premium Sound System', 1500, 'T01'),
+('Technology', 'Adaptive Air Suspension', 2500, 'T03'),
+('Technology', 'Night Vision Assist – Carrera', 3500, 'M9R1_CAR'),
+('Technology', 'Night Vision Assist – Taycan', 2500, 'M9R1_TY');
 
--- Insert Options - Interior
-INSERT INTO options (category, name, description, price_modifier, option_code)
-VALUES
-  ('Interior', 'Black Leather', 'Premium black leather upholstery', 0.00, 'INTB'),
-  ('Interior', 'Bordeaux Leather', 'Burgundy leather upholstery', 2000.00, 'INTR'),
-  ('Interior', 'Cognac Leather', 'Brown leather upholstery', 2000.00, 'INTC'),
-  ('Interior', 'Beige Leather', 'Elegant beige leather upholstery', 1800.00, 'INTBE');
+-- Services
+INSERT INTO services (name, price) VALUES
+('Maintenance Package', 5000),
+('Extended Warranty', 8000);
 
--- Insert Options - Technology
-INSERT INTO options (category, name, description, price_modifier, option_code)
-VALUES
-  ('Technology', 'Premium Sound System', 'Bose premium audio', 1500.00, 'T01'),
-  ('Technology', 'Electric slide/tilt sunroof', 'Outwards-opening electric slide/tilt steel sunroof', 2000.00, 'T02'),
-  ('Technology', 'Adaptive Air Suspension', 'Air suspension system', 2500.00, 'T03'),
-  ('Technology', 'Night Vision Assist (Carrera)', 'Infrared night vision assist', 3500.00, 'M9R1_CAR'),
-  ('Technology', 'HD Matrix LED Headlights (Carrera)', 'The high-resolution HD-Matrix LED headlights', 2800.00, 'M8IU_CAR');
-
--- Cayenne Technology (exclusive list for Cayenne)
-INSERT INTO options (category, name, description, price_modifier, option_code) VALUES
-('Technology', 'LED HD Matrix Headlights', 'LED HD Matrix Headlights for Cayenne', 2800.00, 'CA_M8IU'),
-('Technology', 'Rear Axle Steering', 'Rear Axle Steering for Cayenne', 1900.00, 'CA_M0N5'),
-('Technology', 'InnoDrive including Active Lane Keeping', 'InnoDrive including Active Lane Keeping for Cayenne', 2500.00, 'CA_PPY3'),
-('Technology', 'Night Vision Assist', 'Night Vision Assist for Cayenne', 2200.00, 'CA_M9R1');
-
--- Insert Options - Taycan exclusive accessories
-INSERT INTO options (category, name, description, price_modifier, option_code)
-VALUES
-  ('Technology', 'Rear-axle steering', 'Advanced rear-axle steering system', 3500.00, 'TY_RAS'),
-  ('Technology', 'Porsche Electric Sport Sound', 'Porsche Electric Sport Sound system', 1200.00, 'TY_PESS'),
-  ('Technology', 'Night Vision Assist (Taycan)', 'Advanced night vision assist system for Taycan', 2500.00, 'M9R1_TY'),
-  ('Technology', 'HD Matrix LED Headlights (Taycan)', 'The high-resolution HD-Matrix LED headlights for Taycan', 2800.00, 'M8IU_TY');
-
--- Insert Options - Macan exclusive accessories
-INSERT INTO options (category, name, description, price_modifier, option_code)
-VALUES
-  ('Technology', 'Led HD Matrix Headlights', 'HD Matrix LED headlights for Macan', 2800.00, 'MA_M8IU'),
-  ('Technology', 'Power Steering Plus', 'Power Steering Plus for Macan', 300.00, 'MA_M1N3'),
-  ('Technology', 'Porsche Electric Sport Sound', 'Porsche Electric Sport Sound for Macan', 1200.00, 'MA_MGM3'),
-  ('Technology', 'Bose Surround Premium System', 'Bose Surround Sound System for Macan', 1500.00, 'MA_M9VL'),
-  ('Technology', 'Rear-Axle Steering', 'Rear-Axle Steering for Macan', 3500.00, 'MA_M0N5');
-
--- Insert Services
-INSERT INTO services (name, description, price, image_url)
-VALUES
-  ('Maintenance Package', 'Comprehensive maintenance coverage', 5000.00, NULL),
-  ('Extended Warranty', 'Extended 10-year warranty', 8000.00, NULL),
-  ('Premium Roadside Assistance', '24/7 roadside assistance', 2000.00, NULL),
-  ('Concierge Service', 'VIP concierge and scheduling', 3000.00, NULL);
-
--- Create trigger to automatically update updated_at timestamp
+-- =====================================================
+-- UPDATED_AT TRIGGER
+-- =====================================================
 CREATE OR REPLACE FUNCTION update_timestamp()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -297,37 +214,11 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER update_users_timestamp
-BEFORE UPDATE ON users
-FOR EACH ROW
-EXECUTE FUNCTION update_timestamp();
+CREATE TRIGGER update_users BEFORE UPDATE ON users
+FOR EACH ROW EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER update_car_models_timestamp
-BEFORE UPDATE ON car_models
-FOR EACH ROW
-EXECUTE FUNCTION update_timestamp();
+CREATE TRIGGER update_models BEFORE UPDATE ON car_models
+FOR EACH ROW EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER update_options_timestamp
-BEFORE UPDATE ON options
-FOR EACH ROW
-EXECUTE FUNCTION update_timestamp();
-
-CREATE TRIGGER update_configurations_timestamp
-BEFORE UPDATE ON configurations
-FOR EACH ROW
-EXECUTE FUNCTION update_timestamp();
-
-CREATE TRIGGER update_orders_timestamp
-BEFORE UPDATE ON orders
-FOR EACH ROW
-EXECUTE FUNCTION update_timestamp();
-
-CREATE TRIGGER update_reviews_timestamp
-BEFORE UPDATE ON reviews
-FOR EACH ROW
-EXECUTE FUNCTION update_timestamp();
-
-CREATE TRIGGER update_services_timestamp
-BEFORE UPDATE ON services
-FOR EACH ROW
-EXECUTE FUNCTION update_timestamp();
+CREATE TRIGGER update_options BEFORE UPDATE ON options
+FOR EACH ROW EXECUTE FUNCTION update_timestamp();
