@@ -17,10 +17,10 @@ const NavBar = () => {
    
       return (
     <>
-      {/* NAVBAR */}
+
       <header className="navbar">
         <div className="navbar-left">
-          {/* Burger Button */}
+
           <button
             className="icon-button"
             onClick={toggleSidebar}
@@ -28,9 +28,9 @@ const NavBar = () => {
             aria-expanded={isSidebarOpen}
             aria-controls="sidebar"
           >
-            {/* Show burger or X based on state */}
+
             {isSidebarOpen ? (
-              // X ICON
+ 
               <svg
                 className="icon icon-close"
                 viewBox="0 0 24 24"
@@ -39,7 +39,7 @@ const NavBar = () => {
                 <path d="M18.3 5.71L12 12.01l-6.3-6.3-1.41 1.41L10.59 13.4l-6.3 6.3 1.41 1.41 6.3-6.3 6.29 6.3 1.42-1.41-6.3-6.3 6.3-6.29z" />
               </svg>
             ) : (
-              // BURGER ICON
+  
               <svg
                 className="icon icon-burger"
                 viewBox="0 0 24 24"
@@ -50,14 +50,13 @@ const NavBar = () => {
             )}
           </button>
 
-          {/* Logo / Title */}
           <a href="/" className="navbar-logo">
             Car Configurator
           </a>
         </div>
 
         <div className="navbar-right">
-          {/* User / Login button */}
+
           <button
             className="icon-button"
             onClick={() => {
@@ -84,7 +83,7 @@ const NavBar = () => {
               }}
               aria-label="Logout"
             >
-              {/* simple logout icon */}
+
               <svg
                 className="icon"
                 viewBox="0 0 24 24"
@@ -98,7 +97,7 @@ const NavBar = () => {
         </div>
       </header>
 
-      {/* BACKDROP */}
+
       {isSidebarOpen && (
         <div
           className="backdrop"
@@ -107,7 +106,7 @@ const NavBar = () => {
         />
       )}
 
-      {/* SIDEBAR */}
+
       <aside
         id="sidebar"
         className={`sidebar ${isSidebarOpen ? "sidebar-open" : ""}`}
@@ -121,7 +120,7 @@ const NavBar = () => {
             onClick={closeSidebar}
             aria-label="Close menu"
           >
-            {/* X ICON (same as above, you can reuse component if you want) */}
+  
             <svg
               className="icon icon-close"
               viewBox="0 0 24 24"
@@ -133,7 +132,6 @@ const NavBar = () => {
         </div>
 
         <nav className="sidebar-nav">
-          {/* Add your own links/options here */}
           <button className="sidebar-item" onClick={() => navigate("/")}>Home</button>
           <button className="sidebar-item" onClick={() => navigate("/login")}>Login</button>
           <button className="sidebar-item" onClick={() => navigate("/configurator")}>Configurator</button>
@@ -141,7 +139,6 @@ const NavBar = () => {
           <button className="sidebar-item" onClick={() => navigate("/informations")}>Informations</button>
           <button className="sidebar-item" onClick={() => navigate("/model/taycan")}>Taycan</button>
           {isAdmin && <button className="sidebar-item" onClick={() => navigate("/admin")}>Admin</button>}
-          {/* etc… */}
           <button className="sidebar-item" onClick={() => navigate("/model/cayenne")}>Cayenne</button>
           <button className="sidebar-item" onClick={() => navigate("/model/911")}>911</button>
           <button className="sidebar-item" onClick={() => navigate("/model/macan")}>Macan</button>
