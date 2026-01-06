@@ -21,7 +21,10 @@ import Login from "./pages/Login.jsx";
 import Profile from "./pages/Profile.jsx";
 import Admin from "./pages/Admin.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
-
+import Taycan from "./pages/models/Taycan.jsx";
+import Macan from "./pages/models/Macan.jsx";
+import NineEleven from "./pages/models/NineEleven.jsx";
+import Cayenne from "./pages/models/Cayenne.jsx";
 
 
 
@@ -40,6 +43,18 @@ function App() {
         <Route path="/configurator/:modelName/*" element ={<Configurator />} />
         <Route path="/eperformance" element ={<EPerformance />} />
         <Route path="/informations" element ={<Informations />} />
+        {/* Plural routes (existing) */}
+        <Route path="/models/taycan" element ={<Taycan />} />
+        <Route path="/models/macan" element ={<Macan />} />
+        <Route path="/models/911" element ={<NineEleven />} />
+        <Route path="/models/cayenne" element ={<Cayenne />} />
+
+        {/* Singular routes (requested) */}
+        <Route path="/model/taycan" element ={<Taycan />} />
+        <Route path="/model/macan" element ={<Macan />} />
+        <Route path="/model/911" element ={<NineEleven />} />
+        <Route path="/model/cayenne" element ={<Cayenne />} />
+        
       </Routes>
     </>
   );

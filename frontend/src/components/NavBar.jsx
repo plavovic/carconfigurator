@@ -114,7 +114,7 @@ const NavBar = () => {
         aria-hidden={!isSidebarOpen}
       >
         <div className="sidebar-header">
-          <span className="sidebar-title">Menu</span>
+          <span className="sidebar-title">CAR CONFIGURATOR MENU</span>
 
           <button
             className="icon-button"
@@ -139,9 +139,12 @@ const NavBar = () => {
           <button className="sidebar-item" onClick={() => navigate("/configurator")}>Configurator</button>
           <button className="sidebar-item" onClick={() => navigate("/eperformance")}>E-Performance</button>
           <button className="sidebar-item" onClick={() => navigate("/informations")}>Informations</button>
-          <button className="sidebar-item" onClick={() => navigate("/")}>Services</button>
+          <button className="sidebar-item" onClick={() => navigate("/model/taycan")}>Taycan</button>
           {isAdmin && <button className="sidebar-item" onClick={() => navigate("/admin")}>Admin</button>}
           {/* etc… */}
+          <button className="sidebar-item" onClick={() => navigate("/model/cayenne")}>Cayenne</button>
+          <button className="sidebar-item" onClick={() => navigate("/model/911")}>911</button>
+          <button className="sidebar-item" onClick={() => navigate("/model/macan")}>Macan</button>
         </nav>
       </aside>
     </>

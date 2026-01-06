@@ -31,11 +31,27 @@ export default function ChatWidget() {
     setLoading(true);
 
     try {
-      // If you use CRA dev server proxy, just "/api/chatbot"
-      // Otherwise use "http://localhost:3000/api/chatbot" (your backend port)
-      const data = await http.post("/api/chatbot", { message: text });
+      const lowerText = text.toLowerCase();
+      let replyText;
 
-      const replyText = data?.reply ?? "(No reply)";
+      // Check for contact information keywords
+      if (lowerText.includes("phone") || lowerText.includes("mail") || lowerText.includes("contact")) {
+        replyText = "Here is our contact information:\n\nPhone: +387 60 000 000\nEmail: info@carconfigurator.com";
+      }
+      // Check for working hours keywords
+      else if (lowerText.includes("open") || lowerText.includes("closed") || lowerText.includes("work time")) {
+        replyText = "We are open from 08:00h to 15:00h";
+      }
+      // Check if message is related to cars/configurator
+      else if (!lowerText.match(/\b(car|porsche|taycan|cayenne|macan|911|carrera|configure|vehicle|engine|price|option|spec|feature|model|performance)\b/i)) {
+        replyText = "I only answer questions related to Porsche vehicles and car configuration. How can I help with your car?";
+      }
+      // Default: send to backend for AI response
+      else {
+        const data = await http.post("/api/chatbot", { message: text });
+        replyText = data?.reply ?? "(No reply)";
+      }
+
       setMessages((m) => [...m, { role: "bot", text: replyText }]);
     } catch (e) {
       setMessages((m) => [

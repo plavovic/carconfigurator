@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import "./HomePage.css";
 
 import TestCarCard from '../components/TestCarCard';
@@ -7,6 +7,7 @@ import Footer from '../components/Footer';
 import MapView from '../components/MapView';
 import ImageCarousel from '../components/ImageCarousel';
 import ChatBotWidget from '../components/ChatBotWidget';
+import video1 from '../videos/video1.mp4';
 
 import TaycanImage from "../images/porschetaycan.png";
 import CayenneImage from "../images/porschecayenne.png";
@@ -15,6 +16,20 @@ import NineElevenImage from "../images/porsche911.png";
 
 
 function HomePage () {
+    const [isPlaying, setIsPlaying] = useState(false);
+    const videoRef = useRef(null);
+
+    const togglePlayPause = () => {
+      if (videoRef.current) {
+        if (videoRef.current.paused) {
+          videoRef.current.play().catch(err => console.error('Play error:', err));
+          setIsPlaying(true);
+        } else {
+          videoRef.current.pause();
+          setIsPlaying(false);
+        }
+      }
+    };
     return (
     <div className="container">
         <ChatBotWidget />
@@ -34,6 +49,8 @@ function HomePage () {
         <TestCarCard 
         image={TaycanImage}
         model="Taycan"
+        to="/model/taycan"
+        slug="taycan"
         tags={["Electric", "Sedan", "All-Wheel Drive"]}
         stats={[
           { value: "3.7s", label: "Acceleration 0–100 km/h" },
@@ -46,18 +63,22 @@ function HomePage () {
         <TestCarCard 
         image={CayenneImage}
         model="Cayenne"
+        to="/model/cayenne"
+        slug="cayenne"
         tags={["Gasoline","SUV", "Automatic"]} 
         stats={[
           { value: "4.9s", label: "Acceleration 0–100 km/h" },
           { value: "470hp", label: "Max Power" },
           { value: "253km/h", label: "Top Speed" }
         ]}
-        consumption="Fuel consumption combined (model range): 11.7 – 10.6 l/100 km, CO₂: 267 – 242 g/km"
+        consumption="Electrical energy consumption combined: 19.1 – 16.7 kWh/100 km (preliminary value), CO₂-emissions combined: 0 g/km (preliminary value)"
         />
 
         <TestCarCard 
         image={NineElevenImage}
         model="911 Carrera"
+        to="/model/911"
+        slug="911"
         tags={[ "Gasoline", "Coupe", "Automatic"]}
         stats={[
           { value: "4.2s", label: "Acceleration 0–100 km/h" },
@@ -70,6 +91,8 @@ function HomePage () {
         <TestCarCard 
         image={MacanImage}
         model="Macan"
+        to="/model/macan"
+        slug="macan"
         tags={["Electric","Compact SUV", "Automatic"]}
         stats={[
           { value: "4.6s", label: "Acceleration 0–100 km/h" },
@@ -85,6 +108,18 @@ function HomePage () {
         <ImageCarousel />
 
       </div>     
+      <div className="video-section-home">
+        <h1>Driven by Music. Engineered for Impact.</h1>
+        <div className="video-container-home">
+          <video ref={videoRef} className="homepage-video" loop>
+            <source src={video1} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+          <button className="play-pause-btn-home" onClick={togglePlayPause}>
+            {videoRef.current?.paused !== false ? "▶" : "⏸"}
+          </button>
+        </div>
+      </div>
       <div className="map-container">
         <h1>Find Us.</h1>
         <div className="map">

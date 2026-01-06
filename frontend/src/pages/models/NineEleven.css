@@ -1,0 +1,215 @@
+.App {
+  overflow-x: hidden;
+  --accent: #6A9E6A; /* 911 green */
+}
+
+.App header {
+  position: relative;
+  height: 8vh;
+  overflow: hidden;
+  background: linear-gradient(0deg, transparent, rgba(0, 0, 0, 0.8));
+  z-index: 1;
+}
+
+.nineeleven-heading-text {
+  position: absolute;
+  width: 100%;
+  height: 40vh;
+  background-color: #2D5F3F;
+}
+
+.nineeleven-heading-text h1 {
+  z-index: 2;
+  position: absolute;
+  color: white;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: clamp(3rem, 20vw, 32rem);
+  font-weight: 600;
+  padding-bottom: 20px;
+  font-family: sans-serif;
+  top: calc(25% + 3px - 72px);
+  margin: 0;
+}
+
+.imageContent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+  position: relative;
+  margin-top: -150px;
+  height: 50vh;
+}
+
+.centered-image {
+  width: 70%;
+  max-width: 1000px;
+  margin-top: 0;
+  height: auto;
+  transform: translateY(-125px);
+}
+
+.nineeleven-info {
+  margin-top: -40px;
+  text-align: center;
+  font-family: 'Sofia Sans', sans-serif;
+  font-size: 5rem;
+  font-weight: 100;
+}
+
+.nineeleven-info h2 {
+  margin: 20px 0;
+  font-weight: 500;
+  font-size: 4rem;
+}
+
+.nineeleven-info p {
+  margin: 20px 0;
+  margin-bottom: 40px;
+  font-size: 2rem;
+}
+
+.nineeleven-info p span {
+  font-weight: 700;
+}
+
+.nineeleven-specifications {
+  margin-top: 80px;
+  text-align: center;
+  font-family: 'Sofia Sans', sans-serif;
+  font-size: 3.5rem;
+  font-weight: 100;
+}
+
+.nineeleven-specifications p span {
+  font-weight: 700;
+}
+
+.nineeleven-specs-list {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: nowrap;
+  margin-top: -70px;
+  font-size: 4.5rem;
+}
+
+.nineeleven-specs-list p {
+  font-size: 2rem;
+}
+
+.nineeleven-specs-list p span {
+  font-weight: 700;
+}
+
+.imageFrontContent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+  position: relative;
+}
+
+.centered-image-front {
+  max-width: 350px;
+  width: 100%;
+  height: auto;
+}
+
+.options p
+{
+  text-align: center;
+  font-family: 'Sofia Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 300;
+  max-width: 600px;
+  margin: 10px auto;
+  color: gray;
+  margin-bottom: 40px;
+}
+
+/* Video Section Styling */
+.video-section {
+  margin-top: 80px;
+  margin-bottom: 60px;
+  padding: 0 20px;
+}
+
+.video-title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 30px;
+  font-family: 'Sofia Sans', sans-serif;
+}
+
+.video-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  margin: 30px auto 60px auto;
+  width: 85vw;
+  max-width: 1100px;
+}
+
+.model-video {
+  width: 100%;
+  height: auto;
+  background-color: #000;
+  border-radius: 8px;
+}
+
+.play-pause-btn {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: none;
+  padding: 0;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  line-height: 0;
+  font-weight: normal;
+  letter-spacing: 0;
+  word-spacing: 0;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  color: #000;
+  text-align: center;
+}
+
+.play-pause-btn:hover {
+  background-color: rgba(255, 255, 255, 1);
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.play-pause-btn:active {
+  transform: scale(0.95);
+  transition: all 0.1s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@media (max-width: 768px) {
+  .video-title {
+    font-size: 1.8rem;
+  }
+
+  .video-container {
+    width: 90vw;
+  }
+
+  .play-pause-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+}

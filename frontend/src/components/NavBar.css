@@ -28,12 +28,10 @@ body {
   height: var(--nav-height);
   padding: 0 1.5rem;
   background: var(--color-bg);
-  backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
   justify-content: space-between;
   z-index: 100;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
 }
 
 

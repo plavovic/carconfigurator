@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import NavBar from "../components/NavBar.jsx";
 import Footer from "../components/Footer.jsx";
+import video3 from "../videos/video3.mp4";
 import "./EPerformance.css";
 
 const sections = [
@@ -28,6 +29,8 @@ const sections = [
 
 const EPerformance = () => {
   const [openIndexes, setOpenIndexes] = useState([]);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const videoRef = useRef(null);
 
   const toggleSection = (index) => {
     setOpenIndexes((prev) =>
@@ -35,6 +38,18 @@ const EPerformance = () => {
         ? prev.filter((i) => i !== index)
         : [...prev, index]
     );
+  };
+
+  const togglePlayPause = () => {
+    if (videoRef.current) {
+      if (videoRef.current.paused) {
+        videoRef.current.play().catch(err => console.error('Play error:', err));
+        setIsPlaying(true);
+      } else {
+        videoRef.current.pause();
+        setIsPlaying(false);
+      }
+    }
   };
 
   return (
@@ -74,6 +89,18 @@ const EPerformance = () => {
           );
         })}
       </div>
+
+      <h1 className="smooth-waves-title">Smooth Electrified Waves.</h1>
+      <div className="video-container">
+        <video ref={videoRef} className="smooth-waves-video" loop>
+          <source src={video3} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        <button className="play-pause-btn" onClick={togglePlayPause}>
+          {videoRef.current?.paused !== false ? "▶" : "⏸"}
+        </button>
+      </div>
+
       <div className="consumption">
         <h2>Electric Consumption and Emissions.</h2>
         <p>Taycan Turbo Cross Turismo: Electric energy consumption combined (model range): 21.4 – 18.9 kWh/100 km, CO₂-emissions combined (model range): 0 g/km Macan 4S Electric: Electric energy consumption combined (model range): 20.4 – 17.7 kWh/100 km (preliminary value), CO₂-emissions combined (model range): 0 g/km (preliminary value)</p>
