@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 import user_icon from "../assets/user.svg";
 import email_icon from "../assets/email.svg";
@@ -8,6 +9,7 @@ import "./Login.css";
 
 const AuthPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [action, setAction] = useState("Login"); // "Login" or "Sign Up"
   const [firstName, setFirstName] = useState("");
@@ -15,6 +17,7 @@ const AuthPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const { login } = useAuth();
 
   const handleSubmit = async () => {
     setError("");
@@ -25,38 +28,57 @@ const AuthPage = () => {
       return;
     }
 
-    const url =
-      action === "Login"
-        ? "http://localhost:5000/api/users/login"
-        : "http://localhost:5000/api/users/register";
-
-    const body =
-      action === "Login"
-        ? { email, password }
-        : { first_name: firstName, last_name: lastName, email, password };
+    const registerUrl = "http://localhost:5000/api/users/register";
+    const loginUrl = "http://localhost:5000/api/users/login";
 
     try {
-      const res = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.message || `${action} failed`);
-
       if (action === "Login") {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
-        navigate("/"); // redirect after login
+        const res = await fetch(loginUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || "Login failed");
+        try {
+          login({ token: data.token, user: data.user });
+        } catch {
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("user", JSON.stringify(data.user));
+        }
+        const dest = data.user?.role === "admin" || data.user?.email === "admin@admin.com" ? "/admin" : "/";
+        navigate(dest);
       } else {
-        alert("Registration successful! Please login.");
+        const registerRes = await fetch(registerUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ first_name: firstName, last_name: lastName, email, password }),
+        });
+        const registerData = await registerRes.json();
+        if (!registerRes.ok) throw new Error(registerData.message || "Registration failed");
+
+        // Immediately log in after successful registration
+        const res = await fetch(loginUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || "Login failed");
+        try {
+          login({ token: data.token, user: data.user });
+        } catch {
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("user", JSON.stringify(data.user));
+        }
+        // reset fields and go home
         setAction("Login");
         setFirstName("");
         setLastName("");
         setPassword("");
         setEmail("");
+        const dest = data.user?.role === "admin" || data.user?.email === "admin@admin.com" ? "/admin" : "/";
+        navigate(dest);
       }
     } catch (err) {
       setError(err.message);
@@ -64,17 +86,17 @@ const AuthPage = () => {
   };
 
   return (
-    <div className="background">
-      <div className="container">
-        <div className="header">
-          <div className="text">{action}</div>
-          <div className="underline"></div>
+    <div className="auth-background">
+      <div className="auth-container">
+        <div className="auth-header">
+          <div className="auth-text">{action}</div>
+          <div className="auth-underline"></div>
         </div>
 
-        <div className="form-wrapper">
+        <div className="auth-form-wrapper">
           {action === "Sign Up" && (
             <>
-              <div className="input">
+              <div className="auth-input">
                 <img src={user_icon} alt="" />
                 <input
                   type="text"
@@ -84,7 +106,7 @@ const AuthPage = () => {
                 />
               </div>
 
-              <div className="input">
+              <div className="auth-input">
                 <img src={user_icon} alt="" />
                 <input
                   type="text"
@@ -96,7 +118,7 @@ const AuthPage = () => {
             </>
           )}
 
-          <div className="input">
+          <div className="auth-input">
             <img src={email_icon} alt="" />
             <input
               type="email"
@@ -106,7 +128,7 @@ const AuthPage = () => {
             />
           </div>
 
-          <div className="input">
+          <div className="auth-input">
             <img src={password_icon} alt="" />
             <input
               type="password"
@@ -118,20 +140,20 @@ const AuthPage = () => {
         </div>
 
         {action === "Login" && (
-          <div className="forgot-password">
+          <div className="auth-forgot-password">
             Forgot Password? <span>Click Here</span>
           </div>
         )}
 
         {error && <p style={{ color: "red" }}>{error}</p>}
 
-        <div className="submit-container">
-          <div className="submit" onClick={handleSubmit}>
+        <div className="auth-submit-container">
+          <div className="auth-submit" onClick={handleSubmit}>
             {action}
           </div>
 
           <div
-            className="submit gray"
+            className="auth-submit auth-gray"
             onClick={() =>
               setAction(action === "Login" ? "Sign Up" : "Login")
             }

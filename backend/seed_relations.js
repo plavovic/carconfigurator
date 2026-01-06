@@ -20,9 +20,8 @@ const seedRelations = async () => {
 
         // 4. Define Taycan exclusive options
         const taycanExclusiveWheels = [
-            '19" Standard (Taycan)',
-            '20" Turbo Sport (Taycan)',
-            '21" Mission E (Taycan)'
+            '19" Standard – Taycan',
+            '20" Turbo Sport – Taycan'
         ];
 
         const taycanExclusiveAccessories = [
@@ -33,16 +32,14 @@ const seedRelations = async () => {
         ];
 
         const carreraExclusiveWheels = [
-            '19" Standard',
+            '19" Standard – Carrera',
             '20" Carrera Classic',
-            '21" Carrera S',
-            '22" Turbo'
+            '21" Carrera S'
         ];
 
         const macanExclusiveWheels = [
-            '20" Standard',
-            '21" Offroad Style',
-            '22" RS Spyder'
+            '20" Standard – Macan',
+            '21" Offroad Style – Macan'
         ];
 
         const macanExclusiveAccessories = [
@@ -119,7 +116,7 @@ const seedRelations = async () => {
                 } else {
                     // Other models (e.g. 911, Cayenne) get model-specific wheels.
                     // NO Taycan or Macan exclusive items.
-                    
+
                     // Exclude all Taycan-specific items
                     if (taycanExclusiveWheels.includes(option.name) ||
                         taycanExclusiveAccessories.includes(option.name) ||

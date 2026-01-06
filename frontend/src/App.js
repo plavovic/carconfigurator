@@ -1,5 +1,7 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
+import NavBar from "./components/NavBar";
+import Checkout from "./pages/Checkout.jsx";
 
 
 
@@ -15,18 +17,31 @@ import HomePage from "./pages/HomePage.jsx";
 import Configurator from "./pages/Configurator.jsx";
 import EPerformance from "./pages/EPerformance.jsx";
 import Informations from "./pages/Informations.jsx";
+import Login from "./pages/Login.jsx";
+import Profile from "./pages/Profile.jsx";
+import Admin from "./pages/Admin.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
+
 
 
 
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element ={<HomePage />} />
-      <Route path="/configurator" element ={<Configurator />} />
-      <Route path="/eperformance" element ={<EPerformance />} />
-      <Route path="/informations" element ={<Informations />} />
-    </Routes>
+    <>
+      <NavBar />
+      <Routes>
+        <Route path="/" element ={<HomePage />} />
+        <Route path="/login" element ={<Login />} />
+        <Route path="/profile" element ={<ProtectedRoute><Profile /></ProtectedRoute>} />
+        <Route path="/checkout" element ={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+        <Route path="/admin" element ={<ProtectedRoute><Admin /></ProtectedRoute>} />
+        <Route path="/configurator" element ={<Configurator />} />
+        <Route path="/configurator/:modelName/*" element ={<Configurator />} />
+        <Route path="/eperformance" element ={<EPerformance />} />
+        <Route path="/informations" element ={<Informations />} />
+      </Routes>
+    </>
   );
 }
 

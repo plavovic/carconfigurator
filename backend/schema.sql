@@ -123,6 +123,8 @@ CREATE TABLE orders (
   user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
   configuration_id INTEGER REFERENCES configurations(id) ON DELETE SET NULL,
   order_number VARCHAR(50) UNIQUE NOT NULL,
+  model_name VARCHAR(255),
+  color VARCHAR(255),
   total_amount DECIMAL(10,2) NOT NULL,
   status VARCHAR(50) DEFAULT 'pending',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

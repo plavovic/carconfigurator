@@ -16,6 +16,8 @@ const configurationsRoute = require('./routes/configurations');
 const imageProxyRoute = require('./routes/imageProxy');
 const inventoryRoute = require('./routes/inventory');
 const usersRoute = require('./routes/users');
+const ordersRoute = require('./routes/orders');
+const adminRoute = require('./routes/admin');
 
 
 app.get("/", (req, res) => {    //test performed -- simple server check
@@ -36,6 +38,8 @@ app.get("/api/test-db", async (req, res) => { //test performed -- database check
 });
 
 app.use('/api/users', require('./routes/users'));
+app.use('/api', ordersRoute);
+app.use('/api/admin', adminRoute);
 
 app.use("/api/options", optionsRoute);
 

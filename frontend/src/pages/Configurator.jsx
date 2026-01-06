@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import "./Configurator.css";
 import { fetchModels } from "../api/models";
 import { http } from "../api/http";
@@ -7,6 +8,8 @@ import ModelCard from "../components/ModelCard";
 import OptionCard from "../components/OptionCard";
 import exportPdf from "../components/exportPdf";
 import NavBar from "../components/NavBar";
+import { useAuth } from "../context/AuthContext";
+import Footer from "../components/Footer";
 import carreraImageMatrix from "../data/carreraImageMatrix.json";
 import taycanImageMatrix from "../data/taycanImageMatrix.json";
 import macanImageMatrix from "../data/macanImageMatrix.json";
@@ -17,6 +20,7 @@ import TaycanImage from "../images/porschetaycan.png";
 import NineElevenImage from "../images/porsche911.png";
 import CayenneImage from "../images/porschecayenne.png";
 import MacanImage from "../images/porschemacan.png";
+
 
 const modelImages = {
   Taycan: TaycanImage,
@@ -30,6 +34,10 @@ const angleOptions = ['threeQuarter', 'side', 'rear', 'interior'];
 
 function Stepper() {
   const { model, setModel, selected, setSelected, toggleOption, clearCategory, total, basePrice } = useConfigurator();
+  const navigate = useNavigate();
+  const { modelName } = useParams();
+  const location = useLocation();
+  const urlInitHandled = useRef(false);
   const [models, setModels] = useState([]);
   const [options, setOptions] = useState([]);
   const [step, setStep] = useState(1); // 1: model, 2: options, 3: summary
@@ -38,6 +46,56 @@ function Stepper() {
   const [currentImageAngle, setCurrentImageAngle] = useState('threeQuarter'); // available angles defined in angleOptions
   const [availableInventory, setAvailableInventory] = useState([]);
   const [inventoryError, setInventoryError] = useState("");
+  const { isAuthenticated, token } = useAuth();
+  const [ordering, setOrdering] = useState(false);
+  const [orderMessage, setOrderMessage] = useState("");
+
+  const placeOrder = async () => {
+    if (!isAuthenticated) {
+      alert('You have to log in to place an order.');
+      return;
+    }
+    setOrdering(true);
+    setOrderMessage("");
+    try {
+      const res = await fetch('/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          totalAmount: total,
+          // No configuration id yet; sending null to avoid FK errors
+          configurationId: null,
+          modelName: model?.name || null,
+          color: (() => {
+            const entries = Object.values(selected || {});
+            for (const arr of entries) {
+              for (const opt of arr || []) {
+                const cat = (opt.category || '').toLowerCase();
+                if (cat.includes('color')) return opt.name || opt.option_name || opt.hex_color;
+              }
+            }
+            return null;
+          })(),
+        }),
+      });
+      const text = await res.text();
+      let data = {};
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch (e) {
+        throw new Error(text || 'Unexpected response from server');
+      }
+      if (!res.ok) throw new Error(data.message || 'Order failed');
+      setOrderMessage(`Order placed! ID: ${data.order?.order_number || data.order?.id}`);
+    } catch (e) {
+      setOrderMessage(e.message);
+    } finally {
+      setOrdering(false);
+    }
+  };
 
   useEffect(() => {
     (async () => {
@@ -66,6 +124,47 @@ function Stepper() {
       }
     })();
   }, [model]);
+
+  // If the URL contains a modelName param, set that model and step accordingly
+  useEffect(() => {
+    if (!modelName || !models.length) return;
+    const decoded = decodeURIComponent(modelName || '');
+    const found = models.find((mm) => (mm.name || '').toLowerCase() === decoded.toLowerCase());
+    if (!found) return;
+
+    // If the user landed directly on /configurator/:modelName (no prior in-app history),
+    // inject a /configurator entry so Back goes to model selection.
+    if (!urlInitHandled.current) {
+      const referrerSameOrigin = (() => {
+        try {
+          return new URL(document.referrer).origin === window.location.origin;
+        } catch (e) {
+          return false;
+        }
+      })();
+
+      const likelyDirectLoad = !referrerSameOrigin || window.history.length <= 1;
+      if (likelyDirectLoad) {
+        // replace current history entry with /configurator then push the model URL
+        const slug = encodeURIComponent(found.name);
+        navigate('/configurator', { replace: true });
+        navigate(`/configurator/${slug}`, { replace: false });
+        urlInitHandled.current = true;
+        // continue to set model/step below
+      }
+    }
+
+    // only update model if it's not already selected to avoid overwriting
+    if (!model || model.id !== found.id) {
+      setModel(found);
+    }
+    // if URL ends with /review set step 3, otherwise step 2
+    if (location.pathname.endsWith('/review')) {
+      if (step !== 3) setStep(3);
+    } else {
+      if (step !== 2) setStep(2);
+    }
+  }, [modelName, models, location.pathname]);
 
   useEffect(() => {
     if (!model && step !== 1) setStep(1);
@@ -377,8 +476,11 @@ function Stepper() {
                   image={modelImages[m.name] || TaycanImage}
                   selected={model?.id === m.id}
                   onSelect={() => {
+                    // update state first to avoid UI jitter, then push a URL so history contains selection
                     setModel(m);
                     setStep(2);
+                    const slug = encodeURIComponent(m.name);
+                    navigate(`/configurator/${slug}`); // push new history entry
                   }}
                 />
               ))
@@ -540,7 +642,11 @@ function Stepper() {
               {/* Navigation Buttons */}
               <div style={{ display: 'flex', gap: 16, marginTop: 32, paddingTop: 24, borderTop: '2px solid #e0e0e0' }}>
                 <button 
-                  onClick={() => setStep(1)}
+                  onClick={() => {
+                    // go back to model selection: update state then navigate
+                    setStep(1);
+                    navigate('/configurator');
+                  }}
                   style={{
                     flex: 1,
                     padding: '14px 32px',
@@ -559,7 +665,14 @@ function Stepper() {
                   ← Back
                 </button>
                 <button 
-                  onClick={() => setStep(3)}
+                  onClick={() => {
+                    // update step first then navigate so UI updates smoothly
+                    setStep(3);
+                    if (model?.name) {
+                      const slug = encodeURIComponent(model.name);
+                      navigate(`/configurator/${slug}/review`); // push review into history
+                    }
+                  }}
                   style={{
                     flex: 1,
                     padding: '14px 32px',
@@ -702,7 +815,18 @@ function Stepper() {
           {/* Styled Review Screen Buttons */}
           <div style={{ display: 'flex', gap: 20, marginTop: 40, paddingTop: 32, borderTop: '2px solid #e0e0e0', justifyContent: 'space-between' }}>
             <button 
-              onClick={() => setStep(2)}
+              onClick={() => {
+                // go back to options view for this model: prefer history.back(), fallback to URL
+                setStep(2);
+                if (window.history && window.history.length > 1) {
+                  navigate(-1);
+                } else if (model?.name) {
+                  const slug = encodeURIComponent(model.name);
+                  navigate(`/configurator/${slug}`);
+                } else {
+                  navigate('/configurator');
+                }
+              }}
               style={{
                 flex: 1,
                 padding: '18px 36px',
@@ -740,33 +864,7 @@ function Stepper() {
               ← Back to Options
             </button>
             <button 
-              onClick={async (e) => {
-                const btn = e.currentTarget;
-                const originalText = btn.innerHTML;
-                btn.innerHTML = 'Generating...';
-                btn.disabled = true;
-                try {
-                  await exportPdf({ 
-                    model, 
-                    basePrice, 
-                    total, 
-                    selected, 
-                    imagesToUse 
-                  });
-                  btn.innerHTML = 'PDF Created!';
-                  setTimeout(() => {
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
-                  }, 2000);
-                } catch (err) {
-                  console.error('PDF export error:', err);
-                  btn.innerHTML = 'Error';
-                  setTimeout(() => {
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
-                  }, 2000);
-                }
-              }}
+              onClick={placeOrder}
               style={{
                 flex: 1,
                 padding: '18px 36px',
@@ -797,18 +895,58 @@ function Stepper() {
                 e.target.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
                 e.target.style.background = 'linear-gradient(135deg, #000 0%, #222 100%)';
               }}
-              onMouseDown={(e) => {
-                e.target.style.transform = 'translateY(-1px) scale(0.99)';
-              }}
-              onMouseUp={(e) => {
-                e.target.style.transform = 'translateY(-3px)';
+            >
+              {ordering ? 'Placing Order…' : 'Place Order'}
+            </button>
+          </div>
+          {orderMessage && (
+            <div style={{ marginTop: 12, color: orderMessage.startsWith('Order placed') ? '#0a7' : 'red' }}>
+              {orderMessage}
+            </div>
+          )}
+        </>
+      )}
+      {/* Sticky checkout bar shown when a model is selected and we're past model selection */}
+      {model && step >= 2 && (
+        <div className="sticky-pricebar">
+          <div className="price-summary">Save your configuration</div>
+          <div className="price-actions">
+            <button
+              className="checkout-btn"
+              onClick={async (e) => {
+                const btn = e.currentTarget;
+                const originalText = btn.innerHTML;
+                btn.innerHTML = 'Generating...';
+                btn.disabled = true;
+                try {
+                  await exportPdf({ 
+                    model, 
+                    basePrice, 
+                    total, 
+                    selected, 
+                    imagesToUse 
+                  });
+                  btn.innerHTML = 'PDF Created!';
+                  setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                  }, 2000);
+                } catch (err) {
+                  console.error('PDF export error:', err);
+                  btn.innerHTML = 'Error';
+                  setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                  }, 2000);
+                }
               }}
             >
               Export as PDF
             </button>
           </div>
-        </>
+        </div>
       )}
+      
     </div>
   );
 }
